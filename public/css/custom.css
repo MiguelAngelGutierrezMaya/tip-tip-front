@@ -1,0 +1,209 @@
+/*
+ * Root color themes
+ */
+
+:root {
+    --blue: #14b7b7 !important;
+    --primary: #38b1a8 !important;
+    --secondary: #f78066 !important;
+    --purple: #6b3687 !important;
+    --yellow: #efdc4b;
+    --danger-light: #f018a6 !important;
+}
+
+/*
+ * General
+ */
+
+.h-40 {
+    height: 40px;
+}
+
+.wd-full {
+    width: 100%;
+}
+
+.text-danger-light {
+    color: var(--danger-light) !important;
+}
+
+.btn-primary,
+.btn-primary,
+.chip-primary,
+.MuiFab-secondary,
+.MuiSwitch-colorSecondary.Mui-checked:hover {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--white) !important;
+}
+
+.btn-secondary,
+.btn-secondary,
+.chip-secondary {
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.chip-secondary {
+    color: var(--white) !important;
+}
+
+.alert.alert-purple,
+.alert.alert-custom.alert-purple {
+    background-color: var(--purple);
+    border-color: var(--purple);
+    color: var(--white);
+}
+
+.MuiCardContent-root:last-child {
+    padding-bottom: 16px !important;
+}
+
+.modal-file {
+    width: 50% !important;
+}
+
+@media (max-width: 750px) {
+    .modal-file {
+        width: 90% !important;
+    }
+}
+
+/*
+ * Forms
+ */
+.search-text-field > .MuiFilledInput-root {
+    background-color: var(--white) !important;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    height: 42px;
+}
+
+/* .form-text-field > .MuiInputBase-input {
+    background-color: rgba(0, 0, 0, 0.09) !important;
+    border-radius: 5px !important;
+} */
+
+.search-text-field > .MuiFilledInput-underline:after {
+    border-bottom: 2px solid transparent !important;
+}
+
+.search-text-field > .MuiFormLabel-root {
+    color: rgba(0, 0, 0, 0.54) !important;
+}
+/*
+ * Brand & Aside Styles
+ */
+
+.custom-bg-light-blue {
+    background-color: var(--blue) !important;
+}
+
+#kt_aside_toggle span,
+#kt_aside_toggle span::before,
+#kt_aside_toggle span::after {
+    background-color: var(--white) !important;
+}
+
+.aside-menu .menu-nav > .menu-item > .menu-link .menu-arrow {
+    color: var(--white) !important;
+}
+
+.menu-link .menu-icon.svg-icon svg g [fill] {
+    fill: var(--white) !important;
+}
+
+.menu-item-open > .active .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav > .menu-item.menu-item-open > .menu-link .menu-icon svg g [fill],
+.aside-menu
+    .menu-nav
+    > .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover
+    > .menu-link
+    .menu-icon
+    svg
+    g
+    [fill],
+.fill-upload-file > path {
+    fill: var(--purple) !important;
+}
+
+.menu-bullet-dot span {
+    background-color: var(--white) !important;
+}
+
+.text-purple,
+.aside-menu .menu-nav > .menu-item.menu-item-open > .menu-link i,
+.aside-menu .menu-nav > .menu-item.menu-item-open > .menu-link .menu-icon svg i,
+.aside-menu .menu-nav > .menu-item-open > .active .menu-text,
+.aside-menu .menu-nav > .menu-item-open > .active .menu-arrow,
+.aside-menu .menu-nav > .menu-item.menu-item-open > .menu-link .menu-text,
+.aside-menu .menu-nav > .menu-item.menu-item-open > .menu-link .menu-arrow,
+.aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-active > .menu-link .menu-text,
+.aside-menu > ul > li:hover > a > span.svg-icon.menu-icon > i,
+.aside-menu
+    .menu-nav
+    > .menu-item
+    .menu-submenu
+    .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover
+    > .menu-link
+    .menu-text,
+.aside-menu
+    .menu-nav
+    > .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover
+    > .menu-link
+    .menu-text,
+.aside-menu
+    .menu-nav
+    > .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover
+    > .menu-link
+    .menu-arrow {
+    color: var(--purple) !important;
+}
+
+.aside-menu
+    .menu-nav
+    > .menu-item
+    .menu-submenu
+    .menu-item.menu-item-active
+    > .menu-link
+    .menu-bullet.menu-bullet-dot
+    > span,
+.aside-menu
+    .menu-nav
+    > .menu-item
+    .menu-submenu
+    .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover
+    > .menu-link
+    .menu-bullet.menu-bullet-dot
+    > span {
+    background-color: var(--purple) !important;
+}
+
+.aside-menu .menu-nav > .menu-item.menu-item-open > .menu-link,
+.aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-open > .menu-link,
+.aside-menu
+    .menu-nav
+    > .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover
+    > .menu-link,
+.aside-menu
+    .menu-nav
+    > .menu-item
+    .menu-submenu
+    .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover
+    > .menu-link {
+    background-color: var(--yellow) !important;
+}
+
+@media (max-width: 991.98px) {
+    .brand-dark .header-mobile .burger-icon span::before,
+    .brand-dark .header-mobile .burger-icon span::after,
+    .brand-dark .header-mobile .burger-icon span {
+        background-color: var(--white) !important;
+    }
+
+    .brand-dark .header-mobile .btn .svg-icon svg g [fill] {
+        fill: var(--white) !important;
+    }
+}

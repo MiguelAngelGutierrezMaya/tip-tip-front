@@ -1,12 +1,12 @@
 version: "3.3"
 services:
-  be-system:
+  tip-top:
     container_name: tip-top
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "8000:80"
     networks:
       - contenedores
     environment:

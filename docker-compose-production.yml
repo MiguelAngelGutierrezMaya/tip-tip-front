@@ -1,0 +1,19 @@
+version: "3.3"
+services:
+  be-system:
+    container_name: tip-top
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - containers
+    environment:
+      - "VIRTUAL_HOST=test.tiptopenglish.co"
+    expose:
+      - 80
+
+networks:
+  containers:
+    external: true

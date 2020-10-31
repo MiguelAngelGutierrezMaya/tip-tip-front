@@ -5,12 +5,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8000:80"
+    #ports:
+    #  - "8000:80"
     networks:
       - contenedores
     environment:
       - "VIRTUAL_HOST=test.tiptopenglish.co"
+      - "LETSENCRYPT_HOST=test.tiptopenglish.co"
     expose:
       - 80
 

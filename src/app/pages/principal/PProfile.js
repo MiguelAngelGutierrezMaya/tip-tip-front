@@ -304,7 +304,9 @@ export const PProfile = () => {
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg={6} className="mt-2">
                     <FormControl component="fieldset" className="wd-full">
-                      <FormLabel component="legend">Ciudad</FormLabel>
+                      <FormLabel component="legend">
+                        <FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.CITY"></FormattedMessage>
+                      </FormLabel>
                       <Autocomplete
                         options={cities}
                         getOptionLabel={(option) => option.name ? option.name : ""}
@@ -318,26 +320,30 @@ export const PProfile = () => {
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg={6}>
                     <FormControl component="fieldset" className="wd-full">
-                      <FormLabel component="legend">Nombres</FormLabel>
-                      <TextField label="Nombres" variant="outlined" size="small" className="form-text-field mt-2" onChange={handleChangeFirstName} value={formData.firstName.data} error={formData.firstName.error} helperText={formData.firstName.msj} />
+                      <FormLabel component="legend">
+                        <FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.NAMES"></FormattedMessage>
+                      </FormLabel>
+                      <TextField label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.NAMES.LABEL"></FormattedMessage>} variant="outlined" size="small" className="form-text-field mt-2" onChange={handleChangeFirstName} value={formData.firstName.data} error={formData.firstName.error} helperText={formData.firstName.msj} />
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg={6}>
                     <FormControl component="fieldset" className="wd-full">
-                      <FormLabel component="legend">Apellidos</FormLabel>
-                      <TextField label="Apellidos" variant="outlined" size="small" className="form-text-field mt-2" onChange={handleChangeLastName} value={formData.lastName.data} error={formData.lastName.error} helperText={formData.lastName.msj} />
+                      <FormLabel component="legend">
+                        <FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.LAST_NAMES"></FormattedMessage>
+                      </FormLabel>
+                      <TextField label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.LAST_NAMES.LABEL"></FormattedMessage>} variant="outlined" size="small" className="form-text-field mt-2" onChange={handleChangeLastName} value={formData.lastName.data} error={formData.lastName.error} helperText={formData.lastName.msj} />
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg={6}>
                     <FormControl component="fieldset" className="wd-full">
-                      <FormLabel component="legend">Número telefónico</FormLabel>
-                      <TextField label="Número de teléfono" variant="outlined" size="small" className="form-text-field mt-2" onChange={handleChangePhoneNumber} value={formData.phoneNumber.data} error={formData.phoneNumber.error} helperText={formData.phoneNumber.msj} />
+                      <FormLabel component="legend"><FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.PHONE_NUMBER"></FormattedMessage></FormLabel>
+                      <TextField label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.PHONE_NUMBER.LABEL"></FormattedMessage>} variant="outlined" size="small" className="form-text-field mt-2" onChange={handleChangePhoneNumber} value={formData.phoneNumber.data} error={formData.phoneNumber.error} helperText={formData.phoneNumber.msj} />
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg={6}>
                     <FormControl component="fieldset" className="wd-full">
-                      <FormLabel component="legend">Dirección</FormLabel>
-                      <TextField label="Dirección" variant="outlined" size="small" className="form-text-field mt-2" onChange={handleChangeAddress} value={formData.address.data} error={formData.address.error} helperText={formData.address.msj} />
+                      <FormLabel component="legend"><FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.ADDRESS"></FormattedMessage></FormLabel>
+                      <TextField label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.ADDRESS.LABEL"></FormattedMessage>} variant="outlined" size="small" className="form-text-field mt-2" onChange={handleChangeAddress} value={formData.address.data} error={formData.address.error} helperText={formData.address.msj} />
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={12} md={12} lg={12}>

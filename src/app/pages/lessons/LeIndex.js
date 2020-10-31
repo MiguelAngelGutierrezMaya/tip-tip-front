@@ -393,27 +393,26 @@ export const LeIndex = () => {
       id: event.currentTarget.firstChild.firstChild.getAttribute('data-id')
     });
     if (!response.error)
-      setSnackbar({ status: true, code: "success", message: "Se ha eliminado el archivo exitosamente" });
+      setSnackbar({ status: true, code: "success", message: (<FormattedMessage id="GENERAL.FORM.SUCCESS.FILES.DELETED"></FormattedMessage>) });
     else
       setSnackbar({ status: true, code: "error", message: response.msj });
-
     return handleChangePageMaterials(null, lesson, 0);
   }
 
   let handleSaveFile = async () => {
     const token = auth.getToken();
-    if (files.length <= 0) return setSnackbar({ status: true, code: "error", message: "Debes adjuntar al menos un archivo" });
+    if (files.length <= 0) return setSnackbar({ status: true, code: "error", message: (<FormattedMessage id="GENERAL.FORM.ERROR.FILES.REQUIRED"></FormattedMessage>) });
     const newFiles = [...files]
     let index = 0;
-    files.forEach(async value => {
-      if (value.status !== 2) {
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].status !== 2) {
         newFiles[index].status = 1
         setFiles([...newFiles])
 
         const form_data = new FormData();
         form_data.contentType = 'multipart/form-data';
 
-        form_data.append("file", value.file);
+        form_data.append("file", files[i].file);
         form_data.append("lesson_id", lesson);
         const { status } = await backoffice_service().uploadMaterial({ token, form_data });
 
@@ -424,7 +423,7 @@ export const LeIndex = () => {
           setSnackbar({
             status: true,
             code: "error",
-            message: "A ocurrido un error al cargar el archivo, verifica que sea aceptado por el sistema o comunicate con soporte"
+            message: (<FormattedMessage id="GENERAL.FORM.ERROR.FILES.SIZE"></FormattedMessage>)
           })
         }
 
@@ -434,8 +433,8 @@ export const LeIndex = () => {
       }
       else
         index++
-    });
-    setSnackbar({ status: true, code: "success", message: "Todos los archivos se subieron correctamente" });
+    }
+    setSnackbar({ status: true, code: "success", message: (<FormattedMessage id="GENERAL.FORM.SUCCESS.FILES.UPLOADED"></FormattedMessage>) });
     setTimeout(() => handleChangePageMaterials(null, lesson, 0), 1000);
     setTimeout(() => setFiles([]), 2000)
   }

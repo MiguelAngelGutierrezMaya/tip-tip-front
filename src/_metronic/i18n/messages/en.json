@@ -65,6 +65,7 @@
     "DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.COMMENTS": "Comments",
     "DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.ONLY_SAVE": "Save draft",
     "DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.PUBLISH": "Save draft and publish",
+    "DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.CONFIRM_PUBLIC": "You are sure to publish the memo, publishing a memo will send a notification to the parent",
     "DASHBOARD.CONTENT.CALENDAR.NOTIFICATIONS.CREATED": "Notification of absence created successfully",
     "DASHBOARD.CONTENT.USERS.FIND.TITLE": "Search for users",
     "DASHBOARD.CONTENT.USERS.FIND.FILTER.NAME": "Filter by name",
@@ -157,13 +158,13 @@
     "DASHBOARD.CONTENT.PROFILE.TABLE.FORM.DOCUMENT_TYPE.LABEL": "Document type",
     "DASHBOARD.CONTENT.PROFILE.TABLE.FORM.DOCUMENT.LABEL": "Document",
     "DASHBOARD.CONTENT.PROFILE.TABLE.FORM.DOCUMENT.TEXT": "Document",
-
-    
     "GENERAL.FORM.OPTIONS.YES": "Yes",
     "GENERAL.FORM.OPTIONS.NO": "No",
     "GENERAL.FORM.ACTIONS.SAVE": "Save",
     "GENERAL.FORM.ACTIONS.FIND": "Find",
     "GENERAL.FORM.ACTIONS.CLOSE": "Close",
+    "GENERAL.FORM.ACTIONS.CANCEL": "Cancel",
+    "GENERAL.FORM.ACTIONS.CONFIRM": "Confirm",
     "GENERAL.FORM.SELECT_OPTION": "Please select an option",
     "GENERAL.FORM.ERROR.ERRORS.TEXT": "There are errors in the form fields",
     "GENERAL.FORM.ERROR.REQUIRED": "This field is required",
@@ -174,6 +175,10 @@
     "GENERAL.FORM.ERROR.CONFIRMED": "This field {key} does not match {field}",
     "GENERAL.FORM.ERROR.LENGTH": "You must select at least {number} {label}",
     "GENERAL.FORM.ERROR.STRONG_PASSWORD": "The password must have at least one uppercase letter, one lowercase letter, one special character, one number and between 8 and 15 characters",
+    "GENERAL.FORM.ERROR.FILES.SIZE": "An error has occurred while uploading the file, verify that it is accepted by the system or contact support",
+    "GENERAL.FORM.ERROR.FILES.REQUIRED": "You must attach at least one file",
+    "GENERAL.FORM.SUCCESS.FILES.UPLOADED": "The files have been uploaded successfully",
+    "GENERAL.FORM.SUCCESS.FILES.DELETED": "File has been deleted successfully",
     "GENERAL.FORM.LOCAL_TIME": "Local time",
     "GENERAL.FORM.LOCAL_TIME_COLOMBIA": "Local time in Colombia"
 }

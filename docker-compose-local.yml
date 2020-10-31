@@ -8,12 +8,12 @@ services:
     ports:
       - "8000:80"
     networks:
-      - contenedores
+      - containers_network
     environment:
       - "VIRTUAL_HOST=test.tiptopenglish.co"
     expose:
       - 80
 
 networks:
-  contenedores:
+  containers_network:
     external: true

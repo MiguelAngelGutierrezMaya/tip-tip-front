@@ -48,13 +48,18 @@ import {
   Modal,
   Card,
   TextareaAutosize,
-  CardContent
+  CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText
 } from "@material-ui/core";
 
 import { Autocomplete } from "@material-ui/lab";
 import Alert from "@material-ui/lab/Alert";
 import { withStyles, makeStyles, fade } from "@material-ui/core/styles";
 import { FormattedMessage } from "react-intl";
+import Draggable from 'react-draggable';
 
 /**
  * Icons
@@ -92,6 +97,7 @@ const language = require(`./../../../_metronic/i18n/messages/${selectedLang}.jso
  */
 var tooltipClassData;
 var studentSelected;
+var typeConfirm;
 const formInitData = {
   id: {
     error: false,
@@ -686,6 +692,7 @@ class Calendar extends React.PureComponent {
       currentPriority: 0,
       stateClass: false,
       openModal: false,
+      openConfirm: false,
       formData: { ...formInitData },
       memos: {
         headers: [
@@ -897,6 +904,30 @@ class Calendar extends React.PureComponent {
         },
       });
     };
+    this.handleCloseConfirmCancel = () =>
+      this.setState({
+        openConfirm: false
+      });
+    this.handleCloseConfirm = () => {
+      const token = auth.getToken();
+      const { formData } = this.state;
+      const obj_data = {
+        class_obj_id: tooltipClassData.id,
+        student_class_id: formData.students.data[0].id,
+        date: formData.init.data.replace("T", " "),
+        vocabulary_learned: formData.vocabulary_learned.data,
+        sentences_learned: formData.sentences_learned.data,
+        comments: formData.comments.data,
+        type: formData.type.data ? 'PUBLIC' : 'DRAFT'
+      };
+      if (typeConfirm === 'edit') {
+        var i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT";
+        obj_data['id'] = formData.id.data;
+      } else {
+        var i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS";
+      }
+      this.saveOrEditMemo(token, obj_data, i18n, typeConfirm);
+    }
     this.handleCloseSnackbar = () =>
       this.setState({
         snackbar: {
@@ -1089,6 +1120,38 @@ class Calendar extends React.PureComponent {
       this.handleCloseModal();
       return this.getClasses();
     };
+    this.saveOrEditMemo = async (token, data, i18n, type) => {
+      if (type == 'create') {
+        var response = await backoffice_service().createMemo({
+          token,
+          data
+        });
+      } else {
+        var response = await backoffice_service().editMemo({
+          token,
+          data
+        });
+      }
+      if (response.error)
+        return this.setState({
+          openConfirm: false,
+          snackbar: { status: true, code: "error", message: response.msj },
+        });
+
+      typeConfirm = null;
+      this.initData();
+      if (type == 'create') this.handleCloseModal();
+      else document.getElementById('button-show-detail-class').click();
+
+      this.setState({
+        openConfirm: false,
+        snackbar: {
+          status: true,
+          code: "success",
+          message: (<FormattedMessage id={i18n}></FormattedMessage>),
+        },
+      });
+    };
     this.handleCreateMemo = async (event) => {
       event.preventDefault();
       const token = auth.getToken();
@@ -1109,31 +1172,23 @@ class Calendar extends React.PureComponent {
             message: <FormattedMessage id="GENERAL.FORM.ERROR.ERRORS.TEXT"></FormattedMessage>,
           },
         });
-      const response = await backoffice_service().createMemo({
-        token,
-        data: {
+
+      if (formData.type.data) {
+        typeConfirm = "create";
+        this.setState({
+          openConfirm: true
+        });
+      } else {
+        await this.saveOrEditMemo(token, {
+          class_obj_id: tooltipClassData.id,
           student_class_id: formData.students.data[0].id,
           date: formData.init.data.replace("T", " "),
           vocabulary_learned: formData.vocabulary_learned.data,
           sentences_learned: formData.sentences_learned.data,
           comments: formData.comments.data,
-          type: formData.type.data ? 'PUBLIC' : 'DRAFT',
-          class_obj_id: tooltipClassData.id
-        },
-      });
-      if (response.error)
-        return this.setState({
-          snackbar: { status: true, code: "error", message: response.msj },
-        });
-      this.setState({
-        snackbar: {
-          status: true,
-          code: "success",
-          message: (<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS"></FormattedMessage>),
-        },
-      });
-      this.initData();
-      this.handleCloseModal();
+          type: formData.type.data ? 'PUBLIC' : 'DRAFT'
+        }, "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS", "create");
+      }
     };
     this.handleSaveEditMemo = async (event) => {
       event.preventDefault();
@@ -1155,9 +1210,14 @@ class Calendar extends React.PureComponent {
             message: <FormattedMessage id="GENERAL.FORM.ERROR.ERRORS.TEXT"></FormattedMessage>,
           },
         });
-      const response = await backoffice_service().editMemo({
-        token,
-        data: {
+
+      if (formData.type.data) {
+        typeConfirm = "edit";
+        this.setState({
+          openConfirm: true
+        });
+      } else {
+        await this.saveOrEditMemo(token, {
           id: formData.id.data,
           class_obj_id: tooltipClassData.id,
           student_class_id: formData.students.data[0].id,
@@ -1166,21 +1226,8 @@ class Calendar extends React.PureComponent {
           sentences_learned: formData.sentences_learned.data,
           comments: formData.comments.data,
           type: formData.type.data ? 'PUBLIC' : 'DRAFT'
-        },
-      });
-      if (response.error)
-        return this.setState({
-          snackbar: { status: true, code: "error", message: response.msj },
-        });
-      document.getElementById('button-show-detail-class').click();
-      this.setState({
-        snackbar: {
-          status: true,
-          code: "success",
-          message: <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT"></FormattedMessage>,
-        },
-      });
-      this.initData();
+        }, "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT", "edit");
+      }
     };
     this.handleEditMemo = async (event) => {
       let id = parseInt(event.currentTarget.firstChild.firstChild.getAttribute('data-id'));
@@ -1374,6 +1421,7 @@ class Calendar extends React.PureComponent {
       resources,
       snackbar,
       openModal,
+      openConfirm,
       lessons,
       teachers,
       students,
@@ -1386,6 +1434,37 @@ class Calendar extends React.PureComponent {
 
     return (
       <>
+        <Dialog
+          open={openConfirm}
+          aria-labelledby="draggable-dialog-title"
+        >
+          <DialogContent>
+            <DialogContentText>
+              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.CONFIRM_PUBLIC"></FormattedMessage>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={this.handleCloseConfirmCancel}
+              size="large"
+              variant="contained"
+              className="btn-primary h-35"
+              type={"submit"}
+            >
+              <FormattedMessage id="GENERAL.FORM.ACTIONS.CANCEL"></FormattedMessage>
+            </Button>
+            <Button
+              onClick={this.handleCloseConfirm}
+              size="large"
+              variant="contained"
+              className="btn-primary h-35"
+              type={"submit"}
+            >
+              <FormattedMessage id="GENERAL.FORM.ACTIONS.CONFIRM"></FormattedMessage>
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"

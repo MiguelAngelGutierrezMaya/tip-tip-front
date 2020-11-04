@@ -4,6 +4,7 @@ import routes_api from "./../routes-api.js"
 import status_codes from "./../status-codes.js"
 
 async function verifyError(error, obj_data = {}) {
+    console.log(error);
     if (!error.response) return format.error(status_codes.status().HTTP_500_INTERNAL_SERVER_ERROR, { error_description: "A ocurrido un error inesperado" });
     return format.error(error.response.status, error.response.data, obj_data);
 }

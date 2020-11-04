@@ -1,0 +1,19 @@
+version: "3"
+services:
+  tip-top:
+    container_name: tip-top
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    networks:
+      - containers_network
+    environment:
+      - "VIRTUAL_HOST=test.tiptopenglish.co"
+    expose:
+      - 80
+
+networks:
+  containers_network:
+    external: true

@@ -65,6 +65,7 @@
     "DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.COMMENTS": "Comentarios",
     "DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.ONLY_SAVE": "Guardar borrador",
     "DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.PUBLISH": "Guardar borrador y publicar",
+    "DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.CONFIRM_PUBLIC": "Estás seguro de publicar el memo, al publicar un memo se enviará una notificación al padre",
     "DASHBOARD.CONTENT.CALENDAR.NOTIFICATIONS.CREATED": "Notificación de inasistencia creada satisfactoriamente",
     "DASHBOARD.CONTENT.USERS.FIND.TITLE": "Búsqueda de usuarios",
     "DASHBOARD.CONTENT.USERS.FIND.FILTER.NAME": "Filtrar por nombre",
@@ -156,13 +157,13 @@
     "DASHBOARD.CONTENT.PROFILE.TABLE.FORM.DOCUMENT_TYPE.LABEL": "Tipo de documento",
     "DASHBOARD.CONTENT.PROFILE.TABLE.FORM.DOCUMENT.LABEL": "Documento",
     "DASHBOARD.CONTENT.PROFILE.TABLE.FORM.DOCUMENT.TEXT": "Documento",
-
-    
     "GENERAL.FORM.OPTIONS.YES": "Si",
     "GENERAL.FORM.OPTIONS.NO": "No",
     "GENERAL.FORM.ACTIONS.SAVE": "Guardar",
     "GENERAL.FORM.ACTIONS.FIND": "Buscar",
     "GENERAL.FORM.ACTIONS.CLOSE": "Cerrar",
+    "GENERAL.FORM.ACTIONS.CANCEL": "Cancelar",
+    "GENERAL.FORM.ACTIONS.CONFIRM": "Confirmar",
     "GENERAL.FORM.SELECT_OPTION": "Seleccione una opción",
     "GENERAL.FORM.ERROR.ERRORS.TEXT": "Hay errores en los campos del formulario",
     "GENERAL.FORM.ERROR.REQUIRED": "Este campo es requerido",
@@ -173,6 +174,10 @@
     "GENERAL.FORM.ERROR.CONFIRMED": "Este campo {key} no coincide con {field}",
     "GENERAL.FORM.ERROR.LENGTH": "Debes seleccionar al menos {number} {label}",
     "GENERAL.FORM.ERROR.STRONG_PASSWORD": "La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un caracter especial, un número y tener entre 8 y 15 caracteres",
+    "GENERAL.FORM.ERROR.FILES.SIZE": "A ocurrido un error al cargar el archivo, verifica que sea aceptado por el sistema o comunicate con soporte",
+    "GENERAL.FORM.ERROR.FILES.REQUIRED": "Debes adjuntar al menos un archivo",
+    "GENERAL.FORM.SUCCESS.FILES.UPLOADED": "Se han subido los archivos correctamente",
+    "GENERAL.FORM.SUCCESS.FILES.DELETED": "Se ha eliminado el archivo exitosamente",
     "GENERAL.FORM.LOCAL_TIME": "Hora local",
     "GENERAL.FORM.LOCAL_TIME_COLOMBIA": "Hora local de colombia"
 }

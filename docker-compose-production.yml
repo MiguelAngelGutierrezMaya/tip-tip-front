@@ -1,0 +1,20 @@
+version: "3.3"
+services:
+  tip-top:
+    container_name: tip-top
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #ports:
+    #  - "8000:80"
+    networks:
+      - contenedores
+    environment:
+      - "VIRTUAL_HOST=test.tiptopenglish.co"
+      - "LETSENCRYPT_HOST=test.tiptopenglish.co"
+    expose:
+      - 80
+
+networks:
+  contenedores:
+    external: true

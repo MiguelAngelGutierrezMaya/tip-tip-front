@@ -14,7 +14,7 @@ const error = async (code, obj, obj_data = {}) => {
     switch (true) {
         case (code >= status_codes.status().HTTP_400_BAD_REQUEST && code < status_codes.status().HTTP_500_INTERNAL_SERVER_ERROR):
             if (code === status_codes.status().HTTP_401_UNAUTHORIZED || code === status_codes.status().HTTP_403_FORBIDDEN) {
-                // window.location.href = `/logout`;
+                window.location.href = `/logout`;
             }
             msj = await _verify_errors(obj.errors ? obj.errors : obj, []);
             if (msj.split(',').length > 1) msj = msj.split(',')[getLangCode()];

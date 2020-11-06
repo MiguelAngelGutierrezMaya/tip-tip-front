@@ -37,12 +37,15 @@ import {
   Fab,
   Snackbar,
   Button,
+  FormGroup,
+  FormControlLabel,
   FormControl,
   FormLabel,
   TextField,
   Switch,
   ListItemText,
   Collapse,
+  Checkbox,
   List,
   ListItem,
   Modal,
@@ -687,12 +690,15 @@ class Calendar extends React.PureComponent {
       typeFormModal: null,
       data: [],
       lessons: [],
+      lessonByStudent: [],
       teachers: [],
       students: [],
+      allStudents: [],
       currentPriority: 0,
       stateClass: false,
       openModal: false,
       openConfirm: false,
+      byStudent: true,
       formData: { ...formInitData },
       memos: {
         headers: [
@@ -791,8 +797,13 @@ class Calendar extends React.PureComponent {
       this.handleChangeFormData("sentences_learned", event.target.value);
     this.handleChangeComments = (event) =>
       this.handleChangeFormData("comments", event.target.value);
-    this.handleChangeInit = (event) =>
+    this.handleChangeInit = (event, setEndToo = true) => {
       this.handleChangeFormData("init", event.target.value);
+      const timezone = moment(event.target.value.replace('T', ' ')).tz("America/Bogota");
+      const end = timezone.add(25, 'minutes').format("YYYY-MM-DDTHH:mm");
+      if (setEndToo)
+        this.handleChangeEnd({ target: { value: end } }, false);
+    }
     this.handleChangeEnd = (event) =>
       this.handleChangeFormData("end", event.target.value);
     this.handleChangeUrl = (event) =>
@@ -822,10 +833,12 @@ class Calendar extends React.PureComponent {
         this.setState({
           students: [
             ...response.data.data.map((el) => {
-              return {
-                id: el.id,
-                name: `${el.user.first_name} ${el.user.last_name}`,
-              };
+              if (el.user.is_active)
+                return {
+                  id: el.id,
+                  name: `${el.user.first_name} ${el.user.last_name}`,
+                  teacher: el.teacher
+                };
             }),
           ],
         });
@@ -833,8 +846,10 @@ class Calendar extends React.PureComponent {
       return this.handleChangeFormData("lesson", value);
     };
     this.handleChangeLessonMemo = async (event, value) => this.handleChangeLesson(event, value, false);
-    this.handleChangeTeacher = (event, value) =>
+    this.handleChangeTeacher = (event, value) => {
       this.handleChangeFormData("teacher", value);
+      this.handleChangeUrl({ target: { value: value.link || "" } })
+    }
     this.handleChangeStudents = (event, value) => {
       const students = [...value];
       if (students.length > 2)
@@ -846,6 +861,11 @@ class Calendar extends React.PureComponent {
               (language["DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS.ERROR"].replace('{max}', 2)),
           },
         });
+      if (students.length >= 1) {
+        const teacher = this.state.teachers.find((el) => el.id === students[students.length - 1].teacher);
+        if (teacher) this.handleChangeTeacher(null, teacher);
+      }
+
       return this.handleChangeFormData("students", students);
     };
     this.handleChangeStudentsMemo = (event, value) => {
@@ -892,6 +912,8 @@ class Calendar extends React.PureComponent {
         },
       });
 
+    this.handleChangeTypeProgrammingStudent = (event) => this.setState({ byStudent: true });
+    this.handleChangeTypeProgrammingLesson = (event) => this.setState({ byStudent: false });
     this.handleOpenModal = () => this.setState({ openModal: true });
     this.handleCloseModal = () => {
       tooltipClassData = null;
@@ -945,8 +967,8 @@ class Calendar extends React.PureComponent {
       const timezone = moment().tz("America/Bogota");
       const init = timezone.format("YYYY-MM-DDTHH:mm");
       const end = timezone.add(25, 'minutes').format("YYYY-MM-DDTHH:mm");
-      this.handleChangeInit({ target: { value: init } });
-      this.handleChangeEnd({ target: { value: end } });
+      this.handleChangeInit({ target: { value: init } }, false);
+      this.handleChangeEnd({ target: { value: end } }, false);
       return this.handleEventModal("add_class");
     };
     this.handleShowClassData = async () => {
@@ -1110,6 +1132,7 @@ class Calendar extends React.PureComponent {
           snackbar: { status: true, code: "error", message: response.msj },
         });
       this.setState({
+        byStudent: true,
         snackbar: {
           status: true,
           code: "success",
@@ -1378,6 +1401,7 @@ class Calendar extends React.PureComponent {
         { token },
         { not_paginate: true, role_teacher: true }
       );
+      const response_students = await backoffice_service().getStudents({ token, page: 0 })
       if (response_lessons.error)
         return this.setState({
           snackbar: {
@@ -1391,12 +1415,30 @@ class Calendar extends React.PureComponent {
           snackbar: {
             status: true,
             code: "error",
-            message: response_lessons.msj,
+            message: response_teachers.msj,
+          },
+        });
+      if (response_students.error)
+        return this.setState({
+          snackbar: {
+            status: true,
+            code: "error",
+            message: response_students.msj,
           },
         });
       this.setState({ lessons: response_lessons.data.data });
+      this.setState({ teachers: [...response_teachers.data.data.filter((el) => el.is_active)] });
       this.setState({
-        teachers: [...response_teachers.data.data.filter((el) => el.is_active)],
+        allStudents: [
+          ...response_students.data.data.map((el) => {
+            if (el.user.is_active)
+              return {
+                id: el.id,
+                name: `${el.user.first_name} ${el.user.last_name}`,
+                teacher: el.teacher
+              };
+          }),
+        ],
       });
     }
     return this.getClasses();
@@ -1423,8 +1465,11 @@ class Calendar extends React.PureComponent {
       openModal,
       openConfirm,
       lessons,
+      lessonByStudent,
       teachers,
+      byStudent,
       students,
+      allStudents,
       collapse,
       formData,
       materials,
@@ -1488,6 +1533,19 @@ class Calendar extends React.PureComponent {
                           onSubmit={this.handleSaveClass}
                         >
                           <Grid container>
+                            <Grid item xs={12} sm={12} md={12} lg={12}>
+                              <FormGroup row className="ml-3">
+                                <FormControlLabel
+                                  control={<Checkbox checked={byStudent} onChange={this.handleChangeTypeProgrammingStudent} />}
+                                  label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.BY_STUDENT"></FormattedMessage>}
+                                />
+                                <FormControlLabel
+                                  control={<Checkbox checked={!byStudent} onChange={this.handleChangeTypeProgrammingLesson} />}
+                                  label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.BY_LESSON"></FormattedMessage>}
+                                />
+                              </FormGroup>
+                            </Grid>
+
                             <Grid
                               item
                               xs={12}
@@ -1565,27 +1623,56 @@ class Calendar extends React.PureComponent {
                                 <FormLabel component="legend">
                                   <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.LESSON"></FormattedMessage>
                                 </FormLabel>
-                                <Autocomplete
-                                  options={lessons}
-                                  getOptionLabel={(option) =>
-                                    option.title ? option.title : ""
-                                  }
-                                  value={formData.lesson.data}
-                                  className="mt-2"
-                                  size={"small"}
-                                  style={{ width: "100%" }}
-                                  onChange={this.handleChangeLesson}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      label=""
-                                      variant="outlined"
-                                      style={{ height: "40px" }}
-                                      error={formData.lesson.error}
-                                      helperText={formData.lesson.msj}
-                                    />
-                                  )}
-                                />
+                                {
+                                  byStudent ?
+                                    (
+                                      <Autocomplete
+                                        options={lessonByStudent}
+                                        getOptionLabel={(option) =>
+                                          option.title ? option.title : ""
+                                        }
+                                        value={formData.lesson.data}
+                                        className="mt-2"
+                                        size={"small"}
+                                        style={{ width: "100%" }}
+                                        onChange={null}
+                                        renderInput={(params) => (
+                                          <TextField
+                                            {...params}
+                                            label=""
+                                            variant="outlined"
+                                            style={{ height: "40px" }}
+                                            error={formData.lesson.error}
+                                            helperText={formData.lesson.msj}
+                                          />
+                                        )}
+                                      />
+                                    ) :
+                                    (
+                                      <Autocomplete
+                                        options={lessons}
+                                        getOptionLabel={(option) =>
+                                          option.title ? option.title : ""
+                                        }
+                                        value={formData.lesson.data}
+                                        className="mt-2"
+                                        size={"small"}
+                                        style={{ width: "100%" }}
+                                        onChange={this.handleChangeLesson}
+                                        renderInput={(params) => (
+                                          <TextField
+                                            {...params}
+                                            label=""
+                                            variant="outlined"
+                                            style={{ height: "40px" }}
+                                            error={formData.lesson.error}
+                                            helperText={formData.lesson.msj}
+                                          />
+                                        )}
+                                      />
+                                    )
+                                }
+
                               </FormControl>
                             </Grid>
                             <Grid
@@ -1671,28 +1758,57 @@ class Calendar extends React.PureComponent {
                                 <FormLabel component="legend">
                                   <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS"></FormattedMessage>
                                 </FormLabel>
-                                <Autocomplete
-                                  multiple
-                                  id="tags-outlined"
-                                  options={students}
-                                  getOptionLabel={(option) =>
-                                    option.name ? option.name : ""
-                                  }
-                                  size={"small"}
-                                  value={formData.students.data}
-                                  onChange={this.handleChangeStudents}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      variant="outlined"
-                                      label=""
-                                      placeholder={language['DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS.LABEL'].replace('{max}', 2)}
-                                      size="medium"
-                                      error={formData.students.error}
-                                      helperText={formData.students.msj}
-                                    />
-                                  )}
-                                />
+                                {
+                                  byStudent ?
+                                    (
+                                      <Autocomplete
+                                        multiple
+                                        id="tags-outlined"
+                                        options={allStudents}
+                                        getOptionLabel={(option) =>
+                                          option.name ? option.name : ""
+                                        }
+                                        size={"small"}
+                                        value={formData.students.data}
+                                        onChange={null}
+                                        renderInput={(params) => (
+                                          <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label=""
+                                            placeholder={language['DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS.LABEL'].replace('{max}', 2)}
+                                            size="medium"
+                                            error={formData.students.error}
+                                            helperText={formData.students.msj}
+                                          />
+                                        )}
+                                      />
+                                    ) :
+                                    (
+                                      <Autocomplete
+                                        multiple
+                                        id="tags-outlined"
+                                        options={students}
+                                        getOptionLabel={(option) =>
+                                          option.name ? option.name : ""
+                                        }
+                                        size={"small"}
+                                        value={formData.students.data}
+                                        onChange={this.handleChangeStudents}
+                                        renderInput={(params) => (
+                                          <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label=""
+                                            placeholder={language['DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS.LABEL'].replace('{max}', 2)}
+                                            size="medium"
+                                            error={formData.students.error}
+                                            helperText={formData.students.msj}
+                                          />
+                                        )}
+                                      />
+                                    )
+                                }
                               </FormControl>
                             </Grid>
                             <Grid

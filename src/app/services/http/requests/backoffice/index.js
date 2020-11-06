@@ -52,7 +52,7 @@ export default {
                 'Authorization': `Token ${token}`
             }
         }).then(resp => {
-            return format.success(resp)
+            return format.success(resp);
         }).catch(error => {
             return verifyError(error);
         })

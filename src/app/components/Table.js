@@ -108,6 +108,15 @@ export function Table({ numRows, className, data, current_page, total, onChildEd
                                                                     </td>
                                                                 );
                                                                 break;
+                                                            case "file":
+                                                                return (
+                                                                    <td key={`body-${i}-content-${j}`}>
+                                                                        <IconButton color="default" aria-label="File" component="span" onClick={handleFile}>
+                                                                            <i className="flaticon-file-2" data-id={el.value}></i>
+                                                                        </IconButton>
+                                                                    </td>
+                                                                );
+                                                                break;
                                                             case "edit,file":
                                                                 return (
                                                                     <td key={`body-${i}-content-${j}`}>

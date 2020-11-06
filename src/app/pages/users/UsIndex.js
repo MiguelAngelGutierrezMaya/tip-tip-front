@@ -105,6 +105,7 @@ export const UsIndex = () => {
   ]);
   const [roles, setRoles] = useState([]);
   const [documents, setDocuments] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [cities, setCities] = useState([]);
   const [users, setUsers] = useState({
     headers: [
@@ -123,9 +124,9 @@ export const UsIndex = () => {
       {
         name: (<FormattedMessage id="DASHBOARD.CONTENT.USERS.LIST.TABLE.ESTATE"></FormattedMessage>)
       },
-      {
-        name: (<FormattedMessage id="DASHBOARD.CONTENT.USERS.LIST.TABLE.ACTIONS"></FormattedMessage>)
-      }
+      // {
+      //   name: (<FormattedMessage id="DASHBOARD.CONTENT.USERS.LIST.TABLE.ACTIONS"></FormattedMessage>)
+      // }
     ],
     body: []
   });
@@ -206,6 +207,12 @@ export const UsIndex = () => {
       data: "",
       type: ['required', 'min:8', 'max:30', 'confirmed:password']
     },
+    link: {
+      error: false,
+      msj: "",
+      data: null,
+      type: ['']
+    },
     admission_date: {
       error: false,
       msj: "",
@@ -238,9 +245,16 @@ export const UsIndex = () => {
       msj: "",
       data: null,
       type: ['required']
+    },
+    preferredTeacher: {
+      error: false,
+      msj: "",
+      data: null,
+      type: ['']
     }
   };
-  const [isStudent, setIsStudent] = useState(false)
+  const [isStudent, setIsStudent] = useState(false);
+  const [isTeacher, setIsTeacher] = useState(false);
   const [formData, setFormData] = useState({ ...formInitData });
   const [formDataStudent, setFormDataStudent] = useState({ ...formInitDataStudent });
 
@@ -252,12 +266,15 @@ export const UsIndex = () => {
     const response_cities = await backoffice_service().getCities({ token });
     const response_roles = await backoffice_service().getRoles({ token });
     const response_documents = await backoffice_service().getDocuments({ token });
+    const response_teachers = await backoffice_service().getUsers({ token }, { not_paginate: true, role_teacher: true });
     if (response_cities.error) setSnackbar({ status: true, code: "error", message: response_cities.msj });
     if (response_roles.error) setSnackbar({ status: true, code: "error", message: response_roles.msj });
     if (response_documents.error) setSnackbar({ status: true, code: "error", message: response_documents.msj });
+    if (response_teachers.error) setSnackbar({ status: true, code: "error", message: response_teachers.msj });
     setCities([...response_cities.data.data]);
     setDocuments([...response_documents.data.data]);
     setRoles([...response_roles.data.data]);
+    setTeachers([...response_teachers.data.data]);
     return handleChangePage(null, 0)
   }
 
@@ -309,10 +326,10 @@ export const UsIndex = () => {
             color: `${el.is_active ? 'primary' : 'secondary'}`,
             action: 'chip'
           },
-          {
-            action: 'edit',
-            value: el.id
-          }
+          // {
+          //   action: 'edit',
+          //   value: el.id
+          // }
         ]
       }
     });
@@ -337,18 +354,23 @@ export const UsIndex = () => {
   const handleChangeDocument = (event, value) => handleChangeFormData('documentType', value);
   const handleChangeRole = (event, value) => {
     setIsStudent(false);
-    if (value)
+    setIsTeacher(false);
+    if (value) {
       if (const_roles[value.name] === const_roles.ROLE_USER) setIsStudent(true);
+      if (const_roles[value.name] === const_roles.ROLE_TEACHER) setIsTeacher(true);
+    }
     handleChangeFormData('role', value);
   };
 
   const handleChangeGenre = (event, value) => handleChangeFormStudentData('genre', value);
+  const handleChangeTeacher = (event, value) => handleChangeFormStudentData('preferredTeacher', value);
   const handleChangeParentFirstNameText = (event) => handleChangeFormStudentData('parentFirstName', event.target.value);
   const handleChangeParentLastNameText = (event) => handleChangeFormStudentData('parentLastName', event.target.value);
   const handleChangeParentTypeText = (event) => handleChangeFormStudentData('parentType', event.target.value);
 
   const handleChangeDocumentText = (event) => handleChangeFormData('document', event.target.value);
   const handleChangeEmail = (event) => handleChangeFormData('email', event.target.value);
+  const handleChangeLink = (event) => handleChangeFormData('link', event.target.value);
   const handleChangeFirstName = (event) => handleChangeFormData('firstName', event.target.value);
   const handleChangeLastName = (event) => handleChangeFormData('lastName', event.target.value);
   const handleChangePhoneNumber = (event) => handleChangeFormData('phoneNumber', event.target.value);
@@ -358,13 +380,16 @@ export const UsIndex = () => {
   const handleChangeConfirmPassword = (event) => handleChangeFormData('confirmPassword', event.target.value);
   const handleChangeAdmissionDate = (event) => handleChangeFormData("admission_date", event.target.value);
 
-  const handleClick = (event) => {
-    setOpen({
-      type_one: event.currentTarget.firstChild.getAttribute('type') === 'one' ? !open.type_one : false,
-      type_two: event.currentTarget.firstChild.getAttribute('type') === 'two' ? !open.type_two : false,
-      type_three: event.currentTarget.firstChild.getAttribute('type') === 'three' ? !open.type_three : false,
-      type_four: event.currentTarget.firstChild.getAttribute('type') === 'four' ? !open.type_four : false
-    });
+  const handleClick = (event, restart = false) => {
+    if (!restart)
+      setOpen({
+        type_one: event.currentTarget.firstChild.getAttribute('type') === 'one' ? !open.type_one : false,
+        type_two: event.currentTarget.firstChild.getAttribute('type') === 'two' ? !open.type_two : false,
+        type_three: event.currentTarget.firstChild.getAttribute('type') === 'three' ? !open.type_three : false,
+        type_four: event.currentTarget.firstChild.getAttribute('type') === 'four' ? !open.type_four : false
+      });
+    else
+      setOpen({ type_one: false, type_two: false, type_three: false, type_four: false });
   };
 
   const handleEdit = (event) => {
@@ -396,6 +421,7 @@ export const UsIndex = () => {
         username: formData.username.data,
         first_name: formData.firstName.data,
         last_name: formData.lastName.data,
+        link: formData.link.data,
         email: formData.email.data,
         admission_date: formData.admission_date.data,
         phone_number: formData.phoneNumber.data,
@@ -403,6 +429,7 @@ export const UsIndex = () => {
         document_number: formData.document.data,
         city_id: formData.city.data.id,
         role_id: formData.role.data.id,
+        teacher: formDataStudent.preferredTeacher.data ? formDataStudent.preferredTeacher.data.id : null,
         document_id: formData.documentType.data.id,
         password: formData.password.data,
         password_confirmation: formData.confirmPassword.data,
@@ -416,9 +443,12 @@ export const UsIndex = () => {
         ]
       }, token
     });
+
     if (response.error) return setSnackbar({ status: true, code: "error", message: response.msj });
     setFormData({ ...formInitData });
     setFormDataStudent({ ...formInitDataStudent });
+    handleClick(null, true);
+    setSnackbar({ status: true, code: "success", message: (<FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SUCCESS"></FormattedMessage>) })
     return handleChangePage(null, page);
   }
 
@@ -571,6 +601,18 @@ export const UsIndex = () => {
                           <TextField label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.EMAIL.LABEL"></FormattedMessage>} variant="outlined" size="small" className="form-text-field mt-2" onChange={handleChangeEmail} value={formData.email.data} error={formData.email.error} helperText={formData.email.msj} />
                         </FormControl>
                       </Grid>
+                      {
+                        isTeacher ? (
+                          <>
+                            <Grid item xs={12} sm={12} md={12} lg={12} className="pb-2 pt-2">
+                              <FormControl component="fieldset" className="wd-full">
+                                <FormLabel component="legend"><FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.VIDEO_URL"></FormattedMessage></FormLabel>
+                                <TextField label={'https://example.com'} value={formData.link.data} variant="outlined" size="small" className="form-text-field mt-2" onChange={handleChangeLink} error={formData.link.error} helperText={formData.link.msj} />
+                              </FormControl>
+                            </Grid>
+                          </>
+                        ) : (<></>)
+                      }
                       <Grid item xs={12} sm={12} md={12} lg={12} className="pb-2 pt-2">
                         <FormControl component="fieldset" className="wd-full">
                           <FormLabel component="legend"><FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.ADMISSION_DATE"></FormattedMessage></FormLabel>
@@ -624,6 +666,20 @@ export const UsIndex = () => {
                             {open.type_four ? <ExpandLess /> : <ExpandMore />}
                           </ListItem>
                           <Collapse className="pl-5 pr-5" in={open.type_four} timeout="auto" unmountOnExit>
+                            <Grid item xs={12} sm={12} md={12} lg={12} className="pt-2 pb-2">
+                              <FormControl component="fieldset" className="wd-full">
+                                <FormLabel component="legend"><FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.FOURTH_LEVEL.TEACHER"></FormattedMessage></FormLabel>
+                                <Autocomplete
+                                  options={teachers}
+                                  getOptionLabel={(option) => option.first_name ? `${option.first_name} ${option.last_name}` : ""}
+                                  value={formDataStudent.preferredTeacher.data}
+                                  size={'small'}
+                                  style={{ width: "100%" }}
+                                  onChange={handleChangeTeacher}
+                                  renderInput={(params) => <TextField {...params} label={<FormattedMessage id="GENERAL.FORM.SELECT_OPTION"></FormattedMessage>} variant="outlined" style={{ height: "40px" }} error={formDataStudent.preferredTeacher.error} helperText={formDataStudent.preferredTeacher.msj} />}
+                                />
+                              </FormControl>
+                            </Grid>
                             <Grid item xs={12} sm={12} md={12} lg={12} className="pt-2 pb-2">
                               <FormControl component="fieldset" className="wd-full">
                                 <FormLabel component="legend"><FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.FOURTH_LEVEL.GENRE"></FormattedMessage></FormLabel>

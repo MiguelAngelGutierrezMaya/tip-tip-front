@@ -37,12 +37,15 @@ import {
   Fab,
   Snackbar,
   Button,
+  FormGroup,
+  FormControlLabel,
   FormControl,
   FormLabel,
   TextField,
   Switch,
   ListItemText,
   Collapse,
+  Checkbox,
   List,
   ListItem,
   Modal,
@@ -687,12 +690,15 @@ class Calendar extends React.PureComponent {
       typeFormModal: null,
       data: [],
       lessons: [],
+      lessonByStudent: [],
       teachers: [],
       students: [],
+      allStudents: [],
       currentPriority: 0,
       stateClass: false,
       openModal: false,
       openConfirm: false,
+      byStudent: true,
       formData: { ...formInitData },
       memos: {
         headers: [
@@ -791,8 +797,13 @@ class Calendar extends React.PureComponent {
       this.handleChangeFormData("sentences_learned", event.target.value);
     this.handleChangeComments = (event) =>
       this.handleChangeFormData("comments", event.target.value);
-    this.handleChangeInit = (event) =>
+    this.handleChangeInit = (event, setEndToo = true) => {
       this.handleChangeFormData("init", event.target.value);
+      const timezone = moment(event.target.value.replace('T', ' ')).tz("America/Bogota");
+      const end = timezone.add(25, 'minutes').format("YYYY-MM-DDTHH:mm");
+      if (setEndToo)
+        this.handleChangeEnd({ target: { value: end } }, false);
+    }
     this.handleChangeEnd = (event) =>
       this.handleChangeFormData("end", event.target.value);
     this.handleChangeUrl = (event) =>
@@ -810,7 +821,7 @@ class Calendar extends React.PureComponent {
     }
     this.handleChangeLesson = async (event, value, setStudents = true) => {
       const token = auth.getToken();
-      if (setStudents) {
+      if (setStudents && value) {
         const response = await backoffice_service().getStudents(
           { token, page: 0 },
           { current_lesson: value.id }
@@ -819,26 +830,30 @@ class Calendar extends React.PureComponent {
           return this.setState({
             snackbar: { status: true, code: "error", message: response.msj },
           });
-        this.setState({
-          students: [
-            ...response.data.data.map((el) => {
+        const data = [
+          ...response.data.data.map((el) => {
+            if (el.user.is_active)
               return {
                 id: el.id,
                 name: `${el.user.first_name} ${el.user.last_name}`,
+                teacher: el.teacher,
+                current_lesson: el.current_lesson
               };
-            }),
-          ],
-        });
+          }),
+        ];
+        if (this.state.byStudent) this.setState({ allStudents: data });
+        else this.setState({ students: data });
       }
       return this.handleChangeFormData("lesson", value);
     };
     this.handleChangeLessonMemo = async (event, value) => this.handleChangeLesson(event, value, false);
-    this.handleChangeTeacher = (event, value) =>
+    this.handleChangeTeacher = (event, value) => {
       this.handleChangeFormData("teacher", value);
-    this.handleChangeStudents = (event, value) => {
-      const students = [...value];
-      if (students.length > 2)
-        return this.setState({
+      this.handleChangeUrl({ target: { value: value ? value.link : "" || "" } })
+    }
+    this.verifyLengthStudentsArray = (students) => {
+      if (students.length > 2) {
+        this.setState({
           snackbar: {
             status: true,
             code: "error",
@@ -846,12 +861,36 @@ class Calendar extends React.PureComponent {
               (language["DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS.ERROR"].replace('{max}', 2)),
           },
         });
+      }
+      return !(students.length > 2);
+    }
+    this.updatePreferedTeacher = (students) => {
+      if (students.length >= 1) {
+        const teacher = this.state.teachers.find((el) => el.id === students[students.length - 1].teacher);
+        if (teacher) this.handleChangeTeacher(null, teacher);
+      }
+    }
+    this.updateInfoListByStudent = async (student) => {
+      return await this.handleChangeLesson(null, student.current_lesson);
+    }
+    this.handleChangeStudents = (event, value) => {
+      const students = [...value];
+      if (!this.verifyLengthStudentsArray(students)) return;
+      this.updatePreferedTeacher(students);
       return this.handleChangeFormData("students", students);
-    };
+    }
+    this.handleChangeStudentsAll = async (event, value) => {
+      const students = [...new Map([...value].map(item => [item.id, item])).values()];
+      if (!this.verifyLengthStudentsArray(students)) return;
+      this.updatePreferedTeacher(students);
+      if (students.length === 1) await this.updateInfoListByStudent(students[0]);
+      if (students.length === 0) await this.loadAllStudents();
+      return this.handleChangeFormData("students", students);
+    }
     this.handleChangeStudentsMemo = (event, value) => {
       if (!value) this.handleChangeStudents(event, []);
       else this.handleChangeStudents(event, [value]);
-    };
+    }
     this.handleChangeStateClass = async () => {
       const token = auth.getToken();
       this.setState({ stateClass: true });
@@ -877,7 +916,7 @@ class Calendar extends React.PureComponent {
         },
       });
       return this.getClasses();
-    };
+    }
     this.handleClickCollapse = (event) =>
       this.setState({
         collapse: {
@@ -891,6 +930,15 @@ class Calendar extends React.PureComponent {
               : false,
         },
       });
+
+    this.handleChangeTypeProgramming = async (state) => {
+      this.initData();
+      this.updateDatesInitEnd();
+      this.setState({ byStudent: state });
+      await this.loadAllStudents();
+    }
+    this.handleChangeTypeProgrammingStudent = (event) => this.handleChangeTypeProgramming(true);
+    this.handleChangeTypeProgrammingLesson = (event) => this.handleChangeTypeProgramming(false);
 
     this.handleOpenModal = () => this.setState({ openModal: true });
     this.handleCloseModal = () => {
@@ -941,12 +989,15 @@ class Calendar extends React.PureComponent {
       this.setState({ typeFormModal: type });
       return this.handleOpenModal();
     };
-    this.handleAddClass = () => {
+    this.updateDatesInitEnd = () => {
       const timezone = moment().tz("America/Bogota");
       const init = timezone.format("YYYY-MM-DDTHH:mm");
       const end = timezone.add(25, 'minutes').format("YYYY-MM-DDTHH:mm");
-      this.handleChangeInit({ target: { value: init } });
-      this.handleChangeEnd({ target: { value: end } });
+      this.handleChangeInit({ target: { value: init } }, false);
+      this.handleChangeEnd({ target: { value: end } }, false);
+    }
+    this.handleAddClass = () => {
+      this.updateDatesInitEnd();
       return this.handleEventModal("add_class");
     };
     this.handleShowClassData = async () => {
@@ -1110,6 +1161,7 @@ class Calendar extends React.PureComponent {
           snackbar: { status: true, code: "error", message: response.msj },
         });
       this.setState({
+        byStudent: true,
         snackbar: {
           status: true,
           code: "success",
@@ -1391,15 +1443,40 @@ class Calendar extends React.PureComponent {
           snackbar: {
             status: true,
             code: "error",
-            message: response_lessons.msj,
+            message: response_teachers.msj,
           },
         });
       this.setState({ lessons: response_lessons.data.data });
-      this.setState({
-        teachers: [...response_teachers.data.data.filter((el) => el.is_active)],
-      });
+      this.setState({ teachers: [...response_teachers.data.data.filter((el) => el.is_active)] });
+      await this.loadAllStudents();
     }
     return this.getClasses();
+  }
+
+  async loadAllStudents() {
+    const token = auth.getToken();
+    const response_students = await backoffice_service().getStudents({ token, page: 0 })
+    if (response_students.error)
+      return this.setState({
+        snackbar: {
+          status: true,
+          code: "error",
+          message: response_students.msj,
+        },
+      });
+    this.setState({
+      allStudents: [
+        ...response_students.data.data.map((el) => {
+          if (el.user.is_active)
+            return {
+              id: el.id,
+              name: `${el.user.first_name} ${el.user.last_name}`,
+              teacher: el.teacher,
+              current_lesson: el.current_lesson
+            };
+        }),
+      ],
+    });
   }
 
   componentDidMount() {
@@ -1423,8 +1500,11 @@ class Calendar extends React.PureComponent {
       openModal,
       openConfirm,
       lessons,
+      lessonByStudent,
       teachers,
+      byStudent,
       students,
+      allStudents,
       collapse,
       formData,
       materials,
@@ -1488,6 +1568,19 @@ class Calendar extends React.PureComponent {
                           onSubmit={this.handleSaveClass}
                         >
                           <Grid container>
+                            <Grid item xs={12} sm={12} md={12} lg={12}>
+                              <FormGroup row className="ml-3">
+                                <FormControlLabel
+                                  control={<Checkbox checked={byStudent} onChange={this.handleChangeTypeProgrammingStudent} />}
+                                  label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.BY_STUDENT"></FormattedMessage>}
+                                />
+                                <FormControlLabel
+                                  control={<Checkbox checked={!byStudent} onChange={this.handleChangeTypeProgrammingLesson} />}
+                                  label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.BY_LESSON"></FormattedMessage>}
+                                />
+                              </FormGroup>
+                            </Grid>
+
                             <Grid
                               item
                               xs={12}
@@ -1554,6 +1647,45 @@ class Calendar extends React.PureComponent {
                               item
                               xs={12}
                               sm={12}
+                              md={12}
+                              lg={12}
+                              className="pt-2 pb-2 pl-2 pr-2"
+                            >
+                              <FormControl
+                                component="fieldset"
+                                className="wd-full"
+                              >
+                                <FormLabel component="legend">
+                                  <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS"></FormattedMessage>
+                                </FormLabel>
+                                <Autocomplete
+                                  multiple
+                                  id="tags-outlined"
+                                  options={byStudent ? allStudents : students}
+                                  getOptionLabel={(option) =>
+                                    option.name ? option.name : ""
+                                  }
+                                  size={"small"}
+                                  value={formData.students.data}
+                                  onChange={byStudent ? this.handleChangeStudentsAll : this.handleChangeStudents}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      label=""
+                                      placeholder={language['DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS.LABEL'].replace('{max}', 2)}
+                                      size="medium"
+                                      error={formData.students.error}
+                                      helperText={formData.students.msj}
+                                    />
+                                  )}
+                                />
+                              </FormControl>
+                            </Grid>
+                            <Grid
+                              item
+                              xs={12}
+                              sm={12}
                               md={6}
                               lg={6}
                               className="pt-2 pb-2 pl-2 pr-2"
@@ -1566,7 +1698,7 @@ class Calendar extends React.PureComponent {
                                   <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.LESSON"></FormattedMessage>
                                 </FormLabel>
                                 <Autocomplete
-                                  options={lessons}
+                                  options={byStudent ? lessonByStudent : lessons}
                                   getOptionLabel={(option) =>
                                     option.title ? option.title : ""
                                   }
@@ -1653,45 +1785,6 @@ class Calendar extends React.PureComponent {
                                   helperText={formData.url.msj}
                                   onChange={this.handleChangeUrl}
                                   className={classes.textField}
-                                />
-                              </FormControl>
-                            </Grid>
-                            <Grid
-                              item
-                              xs={12}
-                              sm={12}
-                              md={12}
-                              lg={12}
-                              className="pt-2 pb-2 pl-2 pr-2"
-                            >
-                              <FormControl
-                                component="fieldset"
-                                className="wd-full"
-                              >
-                                <FormLabel component="legend">
-                                  <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS"></FormattedMessage>
-                                </FormLabel>
-                                <Autocomplete
-                                  multiple
-                                  id="tags-outlined"
-                                  options={students}
-                                  getOptionLabel={(option) =>
-                                    option.name ? option.name : ""
-                                  }
-                                  size={"small"}
-                                  value={formData.students.data}
-                                  onChange={this.handleChangeStudents}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      variant="outlined"
-                                      label=""
-                                      placeholder={language['DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS.LABEL'].replace('{max}', 2)}
-                                      size="medium"
-                                      error={formData.students.error}
-                                      helperText={formData.students.msj}
-                                    />
-                                  )}
                                 />
                               </FormControl>
                             </Grid>
@@ -2438,6 +2531,17 @@ class Calendar extends React.PureComponent {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <div className={`card card-custom card-stretch gutter-b p-0`}>
+              {roles[auth.getUserInfo().user.role.name] ===
+                roles.ROLE_ADMIN ? (
+                  <div className={"bg-light text-right"}>
+                    <button className={"btn btn-primary m-4"} onClick={this.handleAddClass}>
+                      <AddIcon />
+                      <span className={"pl-2"}>Crear clase</span>
+                    </button>
+                  </div>
+                ) :
+                (<></>)
+              }
               <Paper>
                 <Scheduler
                   locale={selectedLang === 'en' ? "en-US" : "es-CO"}
@@ -2507,9 +2611,9 @@ class Calendar extends React.PureComponent {
                       >
                         <AddIcon />
                       </Fab>
-                    ) : (
-                      ""
-                    )}
+                    ) :
+                    (<></>)
+                  }
                 </Scheduler>
               </Paper>
             </div>

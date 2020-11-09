@@ -112,7 +112,7 @@ export const LeIndex = () => {
 
   const classes = useStyles();
   const history = useHistory();
-  const permisision = auth.getPermission('Materiales', 'Lecciones');
+  const permisision = auth.getPermission('Materiales', 'Lecciones', false);
   if (!permisision) history.push(routes_api.frontend_tip_top().components.auth.home);
 
   /**
@@ -301,7 +301,8 @@ export const LeIndex = () => {
                 )
           },
           {
-            action: 'edit,file',
+            // action: 'edit,file',
+            action: 'file',
             value: el.id
           }
         ]
@@ -550,13 +551,13 @@ export const LeIndex = () => {
                     <div className="card-body pt-0 pb-3">
                       <div className="tab-content">
                         <section className={`${classes.fullWidth} mt-4`}>
-                          <Dropzone className={'p-2 bg-primary'} maxFiles={5} multiple={true} accept={'.pdf, .mp4'} onDrop={acceptedFiles => handleOnDropAccepted(acceptedFiles)} onDropRejected={() => handleOnDropRejected()}>
+                          <Dropzone className={'p-2 bg-primary'} maxFiles={5} multiple={true} accept={'.pdf, .mp4', '.mp3'} onDrop={acceptedFiles => handleOnDropAccepted(acceptedFiles)} onDropRejected={() => handleOnDropRejected()}>
                             {({ getRootProps, getInputProps }) => (
                               <div {...getRootProps({ className: classes.dropzone })}>
                                 <input {...getInputProps()} />
                                 <p><FormattedMessage id="DASHBOARD.CONTENT.MATERIALS.LIST.DROPDOWN.FIRST_TEXT"></FormattedMessage></p>
                                 <Publish className={"fill-upload-file"} />
-                                <p><FormattedMessage id="DASHBOARD.CONTENT.MATERIALS.LIST.DROPDOWN.SECOND_TEXT"></FormattedMessage><b>pdf y mp4</b></p>
+                                <p><FormattedMessage id="DASHBOARD.CONTENT.MATERIALS.LIST.DROPDOWN.SECOND_TEXT"></FormattedMessage><b> pdf, mp4 y mp3</b></p>
                               </div>
                             )}
                           </Dropzone>

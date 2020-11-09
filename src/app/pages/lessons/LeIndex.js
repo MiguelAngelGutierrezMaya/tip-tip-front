@@ -112,7 +112,7 @@ export const LeIndex = () => {
 
   const classes = useStyles();
   const history = useHistory();
-  const permisision = auth.getPermission('Materiales', 'Lecciones');
+  const permisision = auth.getPermission('Materiales', 'Lecciones', false);
   if (!permisision) history.push(routes_api.frontend_tip_top().components.auth.home);
 
   /**

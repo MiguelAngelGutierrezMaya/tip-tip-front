@@ -1647,6 +1647,45 @@ class Calendar extends React.PureComponent {
                               item
                               xs={12}
                               sm={12}
+                              md={12}
+                              lg={12}
+                              className="pt-2 pb-2 pl-2 pr-2"
+                            >
+                              <FormControl
+                                component="fieldset"
+                                className="wd-full"
+                              >
+                                <FormLabel component="legend">
+                                  <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS"></FormattedMessage>
+                                </FormLabel>
+                                <Autocomplete
+                                  multiple
+                                  id="tags-outlined"
+                                  options={byStudent ? allStudents : students}
+                                  getOptionLabel={(option) =>
+                                    option.name ? option.name : ""
+                                  }
+                                  size={"small"}
+                                  value={formData.students.data}
+                                  onChange={byStudent ? this.handleChangeStudentsAll : this.handleChangeStudents}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      label=""
+                                      placeholder={language['DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS.LABEL'].replace('{max}', 2)}
+                                      size="medium"
+                                      error={formData.students.error}
+                                      helperText={formData.students.msj}
+                                    />
+                                  )}
+                                />
+                              </FormControl>
+                            </Grid>
+                            <Grid
+                              item
+                              xs={12}
+                              sm={12}
                               md={6}
                               lg={6}
                               className="pt-2 pb-2 pl-2 pr-2"
@@ -1746,45 +1785,6 @@ class Calendar extends React.PureComponent {
                                   helperText={formData.url.msj}
                                   onChange={this.handleChangeUrl}
                                   className={classes.textField}
-                                />
-                              </FormControl>
-                            </Grid>
-                            <Grid
-                              item
-                              xs={12}
-                              sm={12}
-                              md={12}
-                              lg={12}
-                              className="pt-2 pb-2 pl-2 pr-2"
-                            >
-                              <FormControl
-                                component="fieldset"
-                                className="wd-full"
-                              >
-                                <FormLabel component="legend">
-                                  <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS"></FormattedMessage>
-                                </FormLabel>
-                                <Autocomplete
-                                  multiple
-                                  id="tags-outlined"
-                                  options={byStudent ? allStudents : students}
-                                  getOptionLabel={(option) =>
-                                    option.name ? option.name : ""
-                                  }
-                                  size={"small"}
-                                  value={formData.students.data}
-                                  onChange={byStudent ? this.handleChangeStudentsAll : this.handleChangeStudents}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      variant="outlined"
-                                      label=""
-                                      placeholder={language['DASHBOARD.CONTENT.CALENDAR.CREATE.STUDENTS.LABEL'].replace('{max}', 2)}
-                                      size="medium"
-                                      error={formData.students.error}
-                                      helperText={formData.students.msj}
-                                    />
-                                  )}
                                 />
                               </FormControl>
                             </Grid>
@@ -2531,6 +2531,17 @@ class Calendar extends React.PureComponent {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <div className={`card card-custom card-stretch gutter-b p-0`}>
+              {roles[auth.getUserInfo().user.role.name] ===
+                roles.ROLE_ADMIN ? (
+                  <div className={"bg-light text-right"}>
+                    <button className={"btn btn-primary m-4"} onClick={this.handleAddClass}>
+                      <AddIcon />
+                      <span className={"pl-2"}>Crear clase</span>
+                    </button>
+                  </div>
+                ) :
+                (<></>)
+              }
               <Paper>
                 <Scheduler
                   locale={selectedLang === 'en' ? "en-US" : "es-CO"}
@@ -2600,9 +2611,9 @@ class Calendar extends React.PureComponent {
                       >
                         <AddIcon />
                       </Fab>
-                    ) : (
-                      ""
-                    )}
+                    ) :
+                    (<></>)
+                  }
                 </Scheduler>
               </Paper>
             </div>

@@ -72,7 +72,7 @@ export const UsIndex = () => {
 
   const classes = useStyles();
   const history = useHistory();
-  const permisision = auth.getPermission('Usuarios', 'Principal');
+  const permisision = auth.getPermission('Usuarios', 'Principal', false);
   if (!permisision) history.push(routes_api.frontend_tip_top().components.auth.home);
 
   /**

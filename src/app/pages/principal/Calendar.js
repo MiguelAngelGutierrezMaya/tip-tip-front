@@ -999,7 +999,6 @@ class Calendar extends React.PureComponent {
     this.updateDatesInitEnd = (current = true) => {
       if (current) var timezone = moment().tz("America/Bogota");
       else var timezone = moment(`${datesCellSelected.startDate.getFullYear()}-${(datesCellSelected.startDate.getMonth() + 1)}-${parseInt(datesCellSelected.startDate.getDate()) < 10 ? '0' + datesCellSelected.startDate.getDate() : datesCellSelected.startDate.getDate()} ${parseInt(datesCellSelected.startDate.getHours()) < 10 ? '0' + datesCellSelected.startDate.getHours() : datesCellSelected.startDate.getHours()}:${parseInt(datesCellSelected.startDate.getMinutes()) < 10 ? '0' + datesCellSelected.startDate.getMinutes() : datesCellSelected.startDate.getMinutes()}:00`).tz("America/Bogota");
-
       const init = timezone.format("YYYY-MM-DDTHH:mm");
       const end = timezone.add(25, 'minutes').format("YYYY-MM-DDTHH:mm");
       this.handleChangeInit({ target: { value: init } }, false);

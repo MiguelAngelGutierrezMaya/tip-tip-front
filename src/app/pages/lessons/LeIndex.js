@@ -251,7 +251,7 @@ export const LeIndex = () => {
   }
 
   const handleOnDropAccepted = (acceptedFiles) => setFiles([...files, ...buildObjectFiles(acceptedFiles)]);
-  const handleOnDropRejected = () => setSnackbar({ status: true, code: "error", message: "Alguno de los archivos no tiene un formato válido o la cantidad excede de 5 archivos por carga" });
+  const handleOnDropRejected = () => setSnackbar({ status: true, code: "error", message: <FormattedMessage id="DASHBOARD.CONTENT.MATERIALS.ERRORS.NOT_ACCEPTED"></FormattedMessage> });
 
   const handleChangePage = async (event, page) => {
     const token = auth.getToken();

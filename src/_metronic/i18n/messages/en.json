@@ -151,6 +151,7 @@
     "DASHBOARD.CONTENT.MATERIALS.LIST.TABLE_LOADED.SIZE": "Size",
     "DASHBOARD.CONTENT.MATERIALS.LIST.TABLE_LOADED.STATE": "Status",
     "DASHBOARD.CONTENT.MATERIALS.LIST.TABLE_LOADED.OPTIONS": "Options",
+    "DASHBOARD.CONTENT.MATERIALS.ERRORS.NOT_ACCEPTED": "Some of the files are not in a valid format or the number exceeds 5 files per upload",
     "DASHBOARD.CONTENT.PROFILE.EDIT.MESSAGES.SUCCESS": "User data has been edited successfully, you must log in again",
     "DASHBOARD.CONTENT.PROFILE.EDIT.MESSAGES.SUCCESS_PASSWORD": "The password has been changed successfully, you must log in again",
     "DASHBOARD.CONTENT.PROFILE.TABLE.PASSWORD.TITLE": "Profile edit",

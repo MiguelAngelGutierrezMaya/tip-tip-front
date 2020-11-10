@@ -98,6 +98,7 @@ const language = require(`./../../../_metronic/i18n/messages/${selectedLang}.jso
 /**
  * Control vars
  */
+var datesCellSelected;
 var tooltipClassData;
 var studentSelected;
 var typeConfirm;
@@ -359,6 +360,12 @@ const WeekViewTimeTableCell = withStyles(groupingStyles, {
   const groupId = groupingInfo[0].id;
   return (
     <WeekView.TimeTableCell
+      onDoubleClick={
+        () => {
+          datesCellSelected = { ...restProps };
+          document.getElementById('button-add-class-by-cell-selected').click();
+        }
+      }
       className={classNames({
         [classes.cellLowPriority]: groupId === 1,
         [classes.cellMediumPriority]: groupId === 2,
@@ -989,8 +996,9 @@ class Calendar extends React.PureComponent {
       this.setState({ typeFormModal: type });
       return this.handleOpenModal();
     };
-    this.updateDatesInitEnd = () => {
-      const timezone = moment().tz("America/Bogota");
+    this.updateDatesInitEnd = (current = true) => {
+      if (current) var timezone = moment().tz("America/Bogota");
+      else var timezone = moment(`${datesCellSelected.startDate.getFullYear()}-${(datesCellSelected.startDate.getMonth() + 1)}-${parseInt(datesCellSelected.startDate.getDate()) < 10 ? '0' + datesCellSelected.startDate.getDate() : datesCellSelected.startDate.getDate()} ${parseInt(datesCellSelected.startDate.getHours()) < 10 ? '0' + datesCellSelected.startDate.getHours() : datesCellSelected.startDate.getHours()}:${parseInt(datesCellSelected.startDate.getMinutes()) < 10 ? '0' + datesCellSelected.startDate.getMinutes() : datesCellSelected.startDate.getMinutes()}:00`).tz("America/Bogota");
       const init = timezone.format("YYYY-MM-DDTHH:mm");
       const end = timezone.add(25, 'minutes').format("YYYY-MM-DDTHH:mm");
       this.handleChangeInit({ target: { value: init } }, false);
@@ -1000,6 +1008,10 @@ class Calendar extends React.PureComponent {
       this.updateDatesInitEnd();
       return this.handleEventModal("add_class");
     };
+    this.handleAddClassByCell = () => {
+      this.updateDatesInitEnd(false);
+      return this.handleEventModal("add_class");
+    }
     this.handleShowClassData = async () => {
       const token = auth.getToken();
       const response = await backoffice_service().getMaterials({ token, lesson_id: tooltipClassData.lesson.id, page: 0 }, { not_paginate: true });
@@ -2580,6 +2592,11 @@ class Calendar extends React.PureComponent {
                     showCloseButton={true}
                   />
 
+                  <button
+                    id={"button-add-class-by-cell-selected"}
+                    style={{ display: "none" }}
+                    onClick={this.handleAddClassByCell}
+                  ></button>
                   <button
                     id={"button-show-detail-class"}
                     style={{ display: "none" }}

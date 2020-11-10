@@ -150,6 +150,7 @@
     "DASHBOARD.CONTENT.MATERIALS.LIST.TABLE_LOADED.SIZE": "Tamaño",
     "DASHBOARD.CONTENT.MATERIALS.LIST.TABLE_LOADED.STATE": "Estado",
     "DASHBOARD.CONTENT.MATERIALS.LIST.TABLE_LOADED.OPTIONS": "Opciones",
+    "DASHBOARD.CONTENT.MATERIALS.ERRORS.NOT_ACCEPTED": "Alguno de los archivos no tiene un formato válido o la cantidad excede de 5 archivos por carga",
     "DASHBOARD.CONTENT.PROFILE.EDIT.MESSAGES.SUCCESS": "Los datos del usuario se han editado satisfactoriamente, debes iniciar sesión nuevamente",
     "DASHBOARD.CONTENT.PROFILE.EDIT.MESSAGES.SUCCESS_PASSWORD": "Se ha cambiado la contraseña correctamente, debes iniciar sesión nuevamente",
     "DASHBOARD.CONTENT.PROFILE.TABLE.PASSWORD.TITLE": "Edición de perfil",

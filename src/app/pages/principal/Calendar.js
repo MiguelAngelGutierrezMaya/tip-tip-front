@@ -359,6 +359,13 @@ const WeekViewTimeTableCell = withStyles(groupingStyles, {
   const groupId = groupingInfo[0].id;
   return (
     <WeekView.TimeTableCell
+      onDoubleClick={
+        () => {
+          // console.log({ ...restProps })
+          var elements = document.querySelectorAll('button.MuiFab-root');
+          elements[0].click();
+        }
+      }
       className={classNames({
         [classes.cellLowPriority]: groupId === 1,
         [classes.cellMediumPriority]: groupId === 2,

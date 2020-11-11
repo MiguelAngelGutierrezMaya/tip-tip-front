@@ -362,8 +362,10 @@ const WeekViewTimeTableCell = withStyles(groupingStyles, {
     <WeekView.TimeTableCell
       onDoubleClick={
         () => {
-          datesCellSelected = { ...restProps };
-          document.getElementById('button-add-class-by-cell-selected').click();
+          if (roles[auth.getUserInfo().user.role.name] === roles.ROLE_ADMIN) {
+            datesCellSelected = { ...restProps };
+            document.getElementById('button-add-class-by-cell-selected').click();
+          }
         }
       }
       className={classNames({
@@ -499,13 +501,13 @@ const TooltipContent = ({
           </div>
         </Grid>
       </Grid>
-      {appointmentData.state ? (
-        <>
-          <Grid
-            container
-            alignItems="center"
-            className={classes.contentContainer}
-          >
+      <Grid
+        container
+        alignItems="center"
+        className={classes.contentContainer}
+      >
+        {appointmentData.state ? (
+          <>
             <Grid item xs={2} className={classes.textCenter}>
               <AccessTime className={classes.icon} />
             </Grid>
@@ -539,8 +541,14 @@ const TooltipContent = ({
                 </a>
               </div>
             </Grid>
-          </Grid>
-          <Grid container alignItems="center">
+          </>
+        ) : (
+            <></>
+          )}
+      </Grid>
+      <Grid container alignItems="center">
+        {appointmentData.state ? (
+          <>
             <Grid
               className={classNames(
                 classes.contentItemIcon,
@@ -579,39 +587,18 @@ const TooltipContent = ({
                   .format("YYYY-MM-DD h:mm A")}
               </span>
             </Grid>
-          </Grid>
-          <Grid container alignItems="center" className={"mt-2"}>
-            {
-              roles[auth.getUserInfo().user.role.name] === roles.ROLE_ADMIN ||
-                roles[auth.getUserInfo().user.role.name] === roles.ROLE_USER ? (
-                  <Grid
-                    item
-                    xs={12}
-                  >
-                    <Grid container alignItems="center">
-                      <Grid
-                        className={classNames(
-                          classes.contentItemIcon,
-                          classes.icon,
-                          classes.colorfulContent
-                        )}
-                        item
-                        xs={2}
-                      >
-                        <span>Pr</span>
-                      </Grid>
-                      <Grid item xs={10}>
-                        <span>{appointmentData.teacher.first_name} {appointmentData.teacher.last_name}</span>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                ) : (<></>)
-            }
-            {appointmentData.students.map((el, index) => (
+          </>
+        ) : (
+            <></>
+          )}
+      </Grid>
+      <Grid container alignItems="center" className={"mt-2"}>
+        {
+          roles[auth.getUserInfo().user.role.name] === roles.ROLE_ADMIN ||
+            roles[auth.getUserInfo().user.role.name] === roles.ROLE_USER ? (
               <Grid
                 item
                 xs={12}
-                key={`container-tooltip-appointment-${appointmentData.id}-${index}`}
               >
                 <Grid container alignItems="center">
                   <Grid
@@ -623,37 +610,61 @@ const TooltipContent = ({
                     item
                     xs={2}
                   >
-                    <i
-                      className={"flaticon2-user text-purple"}
-                      style={{ fontSize: 12 }}
-                    ></i>
+                    <span>Pr</span>
                   </Grid>
                   <Grid item xs={10}>
-                    {`${el.user.first_name} ${el.user.last_name}`}
-                    {
-                      roles[auth.getUserInfo().user.role.name] === roles.ROLE_TEACHER ? (
-                        <a
-                          href="#"
-                          className={"ml-2"}
-                          onClick={() => {
-                            tooltipClassData = appointmentData;
-                            studentSelected = el;
-                            document.getElementById("button-make-notification-missing-student").click();
-                          }}
-                        >
-                          <i className={"fas fa-times text-purple"}></i>
-                        </a>
-                      ) : (<></>)
-                    }
+                    <span>{appointmentData.teacher.first_name} {appointmentData.teacher.last_name}</span>
                   </Grid>
                 </Grid>
               </Grid>
-            ))}
+            ) : (<></>)
+        }
+        {appointmentData.students.map((el, index) => (
+          <Grid
+            item
+            xs={12}
+            key={`container-tooltip-appointment-${appointmentData.id}-${index}`}
+          >
+            <Grid container alignItems="center">
+              <Grid
+                className={classNames(
+                  classes.contentItemIcon,
+                  classes.icon,
+                  classes.colorfulContent
+                )}
+                item
+                xs={2}
+              >
+                <i
+                  className={"flaticon2-user text-purple"}
+                  style={{ fontSize: 12 }}
+                ></i>
+              </Grid>
+              <Grid item xs={10}>
+                {`${el.user.first_name} ${el.user.last_name}`}
+                {appointmentData.state ?
+                  roles[auth.getUserInfo().user.role.name] === roles.ROLE_TEACHER ? (
+                    <a
+                      href="#"
+                      className={"ml-2"}
+                      onClick={() => {
+                        tooltipClassData = appointmentData;
+                        studentSelected = el;
+                        document.getElementById("button-make-notification-missing-student").click();
+                      }}
+                    >
+                      <i className={"fas fa-times text-purple"}></i>
+                    </a>
+                  ) : (<></>) :
+                  (
+                    <></>
+                  )
+                }
+              </Grid>
+            </Grid>
           </Grid>
-        </>
-      ) : (
-          <></>
-        )}
+        ))}
+      </Grid>
     </div>
   );
 };
@@ -1182,7 +1193,9 @@ class Calendar extends React.PureComponent {
       });
       this.initData();
       this.handleCloseModal();
-      return this.getClasses();
+      await this.loadData();
+      await this.loadAllStudents();
+      return await this.getClasses();
     };
     this.saveOrEditMemo = async (token, data, i18n, type) => {
       if (type == 'create') {

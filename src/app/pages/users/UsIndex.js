@@ -336,7 +336,10 @@ export const UsIndex = () => {
     setUsers({ ...arr_users });
   };
 
-  const findUsersByFilter = () => handleChangePage(null, 0);
+  const findUsersByFilter = (event) => {
+    event.preventDefault();
+    return handleChangePage(null, 0);
+  }
   const handleChangeFilter = (event) => setFilter(event.target.value);
   const handleChangeFilterText = (event) => setFilterText(event.target.value);
 
@@ -472,7 +475,7 @@ export const UsIndex = () => {
           <div className={classes.root}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6} lg={6}>
-                <form noValidate autoComplete="off">
+                <form onSubmit={findUsersByFilter} noValidate autoComplete="off">
                   <Grid container spacing={3}>
                     <Grid item xs={12} sm={10} md={10} lg={10} className="pt-0 pb-0">
                       <FormControl component="fieldset" className="wd-full">
@@ -486,7 +489,7 @@ export const UsIndex = () => {
                       <TextField label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.FIND.NAME.LABEL"></FormattedMessage>} variant="filled" value={filterText} className="wd-full search-text-field" size="small" onChange={handleChangeFilterText} />
                     </Grid>
                     <Grid item xs={6} sm={2} md={2} lg={2} className="pt-0">
-                      <Button variant="contained" color="secondary" size="large" className="btn-secondary btn-block h-40" onClick={findUsersByFilter}>
+                      <Button type={"submit"} variant="contained" color="secondary" size="large" className="btn-secondary btn-block h-40">
                         <FormattedMessage id="DASHBOARD.CONTENT.USERS.FIND.BUTTON"></FormattedMessage>
                       </Button>
                     </Grid>

@@ -62,7 +62,6 @@ import { Autocomplete } from "@material-ui/lab";
 import Alert from "@material-ui/lab/Alert";
 import { withStyles, makeStyles, fade } from "@material-ui/core/styles";
 import { FormattedMessage } from "react-intl";
-import Draggable from 'react-draggable';
 
 /**
  * Icons
@@ -424,9 +423,11 @@ const FlexibleSpace = withStyles(styles, {
 
 const Appointment = ({ children, ...restProps }) => {
   const { props } = children[1];
+  var background;
   if (props.data.state)
-    var background = getInitLayoutConfig().js.colors.theme.base.primary;
-  else var background = getInitLayoutConfig().js.colors.theme.base.secondary;
+    background = getInitLayoutConfig().js.colors.theme.base.primary;
+  else
+    background = getInitLayoutConfig().js.colors.theme.base.secondary;
 
   return (
     <Appointments.Appointment
@@ -438,22 +439,24 @@ const Appointment = ({ children, ...restProps }) => {
       className={"p-2 text-white"}
     >
       <Grid container>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
+        <Grid item xs={12} sm={6} md={6} lg={6}>
           {props.data.state ? (
-            <span>
-              {props.data.title.length <= 10
-                ? props.data.title
-                : `${props.data.title.substring(0, 10)}...`}
-            </span>
+            props.data.students.map((el, index) => (
+              <>
+                <span key={`student-appointment-${el.id}-${index}`}>
+                  {el.user.first_name}<br />
+                </span>
+              </>
+            ))
           ) : (
               <span><FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.CANCELED"></FormattedMessage></span>
             )}
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12} className={"text-right"}>
+        <Grid item xs={12} sm={6} md={6} lg={6} className={"text-right"} style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
           {props.data.state ? (
             props.data.students.map((el, index) => (
               <i
-                key={`icon-appointment-${index}`}
+                key={`icon-appointment-${el.id}-${index}`}
                 className={"flaticon2-user text-white"}
                 style={{ fontSize: 12 }}
               ></i>
@@ -463,7 +466,7 @@ const Appointment = ({ children, ...restProps }) => {
             )}
         </Grid>
       </Grid>
-    </Appointments.Appointment>
+    </Appointments.Appointment >
   );
 };
 
@@ -474,6 +477,8 @@ const TooltipContent = ({
 }) => {
   const resource = appointmentResources[0];
   const classes = useTooltipContentStyles({ color: resource.color });
+  const endDate = new Date(parseInt(formatDate(appointmentData.endDate, { year: "numeric" })), (parseInt(formatDate(appointmentData.endDate, { month: "numeric" })) - 1), parseInt(formatDate(appointmentData.endDate, { day: "numeric" })), parseInt(formatDate(appointmentData.endDate, { hour: "numeric", hour12: false })) > 23 ? 0 : parseInt(formatDate(appointmentData.endDate, { hour: "numeric", hour12: false })), parseInt(formatDate(appointmentData.endDate, { minute: "numeric" })), parseInt(formatDate(appointmentData.endDate, { second: "numeric" })));
+  const currentDate = new Date(parseInt(moment().tz("America/Bogota").format("YYYY")), (parseInt(moment().tz("America/Bogota").format("MM")) - 1), parseInt(moment().tz("America/Bogota").format("DD")), parseInt(moment().tz("America/Bogota").format("HH")) > 23 ? 0 : parseInt(moment().tz("America/Bogota").format("HH")), parseInt(moment().tz("America/Bogota").format("mm")), 0);
   return (
     <div
       className={classes.content}
@@ -522,9 +527,10 @@ const TooltipContent = ({
                   minute: "numeric",
                 })}`}
                 <a
-                  href="#"
+                  href="/"
                   className={"ml-2"}
-                  onClick={() => {
+                  onClick={(event) => {
+                    event.preventDefault();
                     tooltipClassData = appointmentData;
                     document.getElementById("button-show-detail-class").click();
                   }}
@@ -536,7 +542,7 @@ const TooltipContent = ({
             <Grid item xs={2} className={classes.textCenter}></Grid>
             <Grid item xs={10}>
               <div className={classes.text}>
-                <a href={appointmentData.url} target="_blank">
+                <a href={appointmentData.url} target="_blank" rel="noopener noreferrer">
                   {appointmentData.url}
                 </a>
               </div>
@@ -643,22 +649,24 @@ const TooltipContent = ({
               <Grid item xs={10}>
                 {`${el.user.first_name} ${el.user.last_name}`}
                 {appointmentData.state ?
-                  roles[auth.getUserInfo().user.role.name] === roles.ROLE_TEACHER ? (
-                    <a
-                      href="#"
-                      className={"ml-2"}
-                      onClick={() => {
-                        tooltipClassData = appointmentData;
-                        studentSelected = el;
-                        document.getElementById("button-make-notification-missing-student").click();
-                      }}
-                    >
-                      <i className={"fas fa-times text-purple"}></i>
-                    </a>
-                  ) : (<></>) :
-                  (
-                    <></>
-                  )
+                  roles[auth.getUserInfo().user.role.name] === roles.ROLE_TEACHER ?
+                    currentDate > endDate ? (
+                      <a
+                        href="/"
+                        className={"ml-2"}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          tooltipClassData = appointmentData;
+                          studentSelected = el;
+                          document.getElementById("button-make-notification-missing-student").click();
+                        }}
+                      >
+                        <i className={"fas fa-times text-purple"}></i>
+                      </a>
+                    ) :
+                      (<></>) :
+                    (<></>) :
+                  (<></>)
                 }
               </Grid>
             </Grid>
@@ -762,7 +770,7 @@ class Calendar extends React.PureComponent {
           instances: priorities,
         },
       ],
-    };
+    }
 
     /**
      * Handlers
@@ -780,16 +788,13 @@ class Calendar extends React.PureComponent {
       });
       this.setState({ formData: { ...formInitData } });
     }
-
     this.currentViewNameChange = (currentViewName) => {
       this.setState({ currentViewName });
-    };
-
+    }
     this.currentDateChange = (currentDate) => {
       this.setState({ currentDate });
       return this.getClasses();
-    };
-
+    }
     this.priorityChange = (value) => {
       const { resources } = this.state;
       const nextResources = [
@@ -800,14 +805,14 @@ class Calendar extends React.PureComponent {
       ];
 
       this.setState({ currentPriority: value, resources: nextResources });
-    };
+    }
 
     this.handleChangeFormData = (property, value) => {
       const { formData } = this.state;
       const form_data_obj = { ...formData };
       form_data_obj[property].data = value;
       this.setState({ formData: { ...form_data_obj } });
-    };
+    }
 
     this.handleChangeVocabularyLearned = (event) =>
       this.handleChangeFormData("vocabulary_learned", event.target.value);
@@ -857,13 +862,15 @@ class Calendar extends React.PureComponent {
                 teacher: el.teacher,
                 current_lesson: el.current_lesson
               };
+            else
+              return {};
           }),
         ];
         if (this.state.byStudent) this.setState({ allStudents: data });
         else this.setState({ students: data });
       }
       return this.handleChangeFormData("lesson", value);
-    };
+    }
     this.handleChangeLessonMemo = async (event, value) => this.handleChangeLesson(event, value, false);
     this.handleChangeTeacher = (event, value) => {
       this.handleChangeFormData("teacher", value);
@@ -969,7 +976,7 @@ class Calendar extends React.PureComponent {
           type_two: false,
         },
       });
-    };
+    }
     this.handleCloseConfirmCancel = () =>
       this.setState({
         openConfirm: false
@@ -986,11 +993,12 @@ class Calendar extends React.PureComponent {
         comments: formData.comments.data,
         type: formData.type.data ? 'PUBLIC' : 'DRAFT'
       };
+      var i18n;
       if (typeConfirm === 'edit') {
-        var i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT";
+        i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT";
         obj_data['id'] = formData.id.data;
       } else {
-        var i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS";
+        i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS";
       }
       this.saveOrEditMemo(token, obj_data, i18n, typeConfirm);
     }
@@ -1006,10 +1014,13 @@ class Calendar extends React.PureComponent {
     this.handleEventModal = (type) => {
       this.setState({ typeFormModal: type });
       return this.handleOpenModal();
-    };
+    }
     this.updateDatesInitEnd = (current = true) => {
-      if (current) var timezone = moment().tz("America/Bogota");
-      else var timezone = moment(`${datesCellSelected.startDate.getFullYear()}-${(datesCellSelected.startDate.getMonth() + 1)}-${parseInt(datesCellSelected.startDate.getDate()) < 10 ? '0' + datesCellSelected.startDate.getDate() : datesCellSelected.startDate.getDate()} ${parseInt(datesCellSelected.startDate.getHours()) < 10 ? '0' + datesCellSelected.startDate.getHours() : datesCellSelected.startDate.getHours()}:${parseInt(datesCellSelected.startDate.getMinutes()) < 10 ? '0' + datesCellSelected.startDate.getMinutes() : datesCellSelected.startDate.getMinutes()}:00`).tz("America/Bogota");
+      var timezone;
+      if (current)
+        timezone = moment().tz("America/Bogota");
+      else
+        timezone = moment(`${datesCellSelected.startDate.getFullYear()}-${(datesCellSelected.startDate.getMonth() + 1)}-${parseInt(datesCellSelected.startDate.getDate()) < 10 ? '0' + datesCellSelected.startDate.getDate() : datesCellSelected.startDate.getDate()} ${parseInt(datesCellSelected.startDate.getHours()) < 10 ? '0' + datesCellSelected.startDate.getHours() : datesCellSelected.startDate.getHours()}:${parseInt(datesCellSelected.startDate.getMinutes()) < 10 ? '0' + datesCellSelected.startDate.getMinutes() : datesCellSelected.startDate.getMinutes()}:00`).tz("America/Bogota");
       const init = timezone.format("YYYY-MM-DDTHH:mm");
       const end = timezone.add(25, 'minutes').format("YYYY-MM-DDTHH:mm");
       this.handleChangeInit({ target: { value: init } }, false);
@@ -1018,7 +1029,7 @@ class Calendar extends React.PureComponent {
     this.handleAddClass = () => {
       this.updateDatesInitEnd();
       return this.handleEventModal("add_class");
-    };
+    }
     this.handleAddClassByCell = () => {
       this.updateDatesInitEnd(false);
       return this.handleEventModal("add_class");
@@ -1119,7 +1130,7 @@ class Calendar extends React.PureComponent {
       });
       this.setState({ materials: { ...arr_materials }, memos: { ...arr_memos } });
       this.handleEventModal("class_data");
-    };
+    }
     this.updateDataForEdit = async () => {
       const token = auth.getToken();
       const response_students = await backoffice_service().getClasses({ token, page: 0 }, { class_id: tooltipClassData.id });
@@ -1143,7 +1154,7 @@ class Calendar extends React.PureComponent {
       await this.updateDataForEdit();
       this.handleChangeLessonMemo(null, tooltipClassData.lesson);
       this.handleEventModal("edit_class_data");
-    };
+    }
     this.handleEditMemoData = async () => {
       this.handleEventModal("edit_memo_data");
     }
@@ -1196,15 +1207,16 @@ class Calendar extends React.PureComponent {
       await this.loadData();
       await this.loadAllStudents();
       return await this.getClasses();
-    };
+    }
     this.saveOrEditMemo = async (token, data, i18n, type) => {
-      if (type == 'create') {
-        var response = await backoffice_service().createMemo({
+      var response;
+      if (type === 'create') {
+        response = await backoffice_service().createMemo({
           token,
           data
         });
       } else {
-        var response = await backoffice_service().editMemo({
+        response = await backoffice_service().editMemo({
           token,
           data
         });
@@ -1217,7 +1229,7 @@ class Calendar extends React.PureComponent {
 
       typeConfirm = null;
       this.initData();
-      if (type == 'create') this.handleCloseModal();
+      if (type === 'create') this.handleCloseModal();
       else document.getElementById('button-show-detail-class').click();
 
       this.setState({
@@ -1228,7 +1240,7 @@ class Calendar extends React.PureComponent {
           message: (<FormattedMessage id={i18n}></FormattedMessage>),
         },
       });
-    };
+    }
     this.handleCreateMemo = async (event) => {
       event.preventDefault();
       const token = auth.getToken();
@@ -1266,7 +1278,7 @@ class Calendar extends React.PureComponent {
           type: formData.type.data ? 'PUBLIC' : 'DRAFT'
         }, "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS", "create");
       }
-    };
+    }
     this.handleSaveEditMemo = async (event) => {
       event.preventDefault();
       const token = auth.getToken();
@@ -1305,7 +1317,7 @@ class Calendar extends React.PureComponent {
           type: formData.type.data ? 'PUBLIC' : 'DRAFT'
         }, "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT", "edit");
       }
-    };
+    }
     this.handleEditMemo = async (event) => {
       let id = parseInt(event.currentTarget.firstChild.firstChild.getAttribute('data-id'));
       const { memos } = this.state;
@@ -1357,7 +1369,6 @@ class Calendar extends React.PureComponent {
         },
       });
     }
-
     this.flexibleSpace = connectProps(FlexibleSpace, () => {
       const { currentPriority } = this.state;
       return {
@@ -1498,7 +1509,9 @@ class Calendar extends React.PureComponent {
               name: `${el.user.first_name} ${el.user.last_name}`,
               teacher: el.teacher,
               current_lesson: el.current_lesson
-            };
+            }
+          else
+            return {}
         }),
       ],
     });

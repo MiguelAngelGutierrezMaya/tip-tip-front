@@ -93,7 +93,7 @@ export const UsIndex = () => {
   });
   const [filter, setFilter] = useState('first_name');
   const [filterText, setFilterText] = useState('');
-  const [genres, setGenres] = useState([
+  const [genres] = useState([
     {
       type: 'female',
       name: 'Niña'

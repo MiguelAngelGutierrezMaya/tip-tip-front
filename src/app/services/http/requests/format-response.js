@@ -20,7 +20,8 @@ const error = async (code, obj, obj_data = {}) => {
             if (msj.split(',').length > 1) msj = msj.split(',')[getLangCode()];
             break;
         default:
-            msj = await _verify_errors(obj.errors ? obj.errors : ["Error 500"], []);
+            console.log(obj, obj.msj);
+            msj = await _verify_errors(obj.errors ? obj.errors : obj.msg ? obj.msg : "Error 500", []);
             if (msj.split(',').length > 1) msj = msj.split(',')[getLangCode()];
             break;
     }

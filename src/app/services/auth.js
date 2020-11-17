@@ -21,8 +21,11 @@ const logOut = async () => {
 
 const getPermission = (parent, children, isSubmenu = true) => {
     const parent_view = MenuList.find(el => el.name === parent);
-    if (isSubmenu) var view = parent_view.submenu.filter(el => el.name === children);
-    else var view = [parent_view];
+    var view;
+    if (isSubmenu)
+        view = parent_view.submenu.filter(el => el.name === children);
+    else
+        view = [parent_view];
     if (view[0].verify.admin) {
         if (roles[getUserInfo().user.role.name] === roles.ROLE_ADMIN)
             return true

@@ -207,7 +207,6 @@ export function QuickUser() {
                                 </div>
                               </div>
                             )
-                            break;
                           default:
                             return (<></>)
                         }

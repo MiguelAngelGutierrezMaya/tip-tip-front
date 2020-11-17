@@ -32,7 +32,7 @@ export function AsideMenuList({ layoutProps }) {
               true;
 
             if (admin) {
-              if (el.url != null) {
+              if (el.url != null)
                 return (
                   <li
                     className={`menu-item ${getMenuItemActive(`${el.url}`, false)}`}
@@ -55,7 +55,7 @@ export function AsideMenuList({ layoutProps }) {
                     </NavLink>
                   </li>
                 )
-              } else {
+              else
                 return (
                   <li
                     className={`menu-item menu-item-submenu ${getMenuItemActive(`/${el.slug}`, true)}`}
@@ -110,6 +110,8 @@ export function AsideMenuList({ layoutProps }) {
                                     </NavLink>
                                   </li>
                                 )
+                              else
+                                return (<></>)
                             })
                           }
                         </ul>
@@ -117,8 +119,8 @@ export function AsideMenuList({ layoutProps }) {
                     </div>
                   </li>
                 )
-              }
-            }
+            } else
+              return (<></>)
           })
         }
       </ul>

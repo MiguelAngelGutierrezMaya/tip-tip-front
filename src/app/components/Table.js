@@ -91,14 +91,12 @@ export function Table({ numRows, className, data, current_page, total, onChildEd
                                                                         />
                                                                     </td>
                                                                 );
-                                                                break;
                                                             case "href":
                                                                 return (
                                                                     <td key={`body-${i}-content-${j}`}>
                                                                         <a href={el.value} target={'blank'}>{el.text}</a>
                                                                     </td>
                                                                 );
-                                                                break;
                                                             case "edit":
                                                                 return (
                                                                     <td key={`body-${i}-content-${j}`}>
@@ -107,7 +105,6 @@ export function Table({ numRows, className, data, current_page, total, onChildEd
                                                                         </IconButton>
                                                                     </td>
                                                                 );
-                                                                break;
                                                             case "file":
                                                                 return (
                                                                     <td key={`body-${i}-content-${j}`}>
@@ -116,7 +113,6 @@ export function Table({ numRows, className, data, current_page, total, onChildEd
                                                                         </IconButton>
                                                                     </td>
                                                                 );
-                                                                break;
                                                             case "edit,file":
                                                                 return (
                                                                     <td key={`body-${i}-content-${j}`}>
@@ -134,10 +130,8 @@ export function Table({ numRows, className, data, current_page, total, onChildEd
                                                                         </Grid>
                                                                     </td>
                                                                 );
-                                                                break;
                                                             case "state":
                                                                 return el.component(`body-${i}-content-${j}`, null);
-                                                                break;
                                                             case "delete":
                                                                 return (
                                                                     <td key={`body-${i}-content-${j}`}>
@@ -146,7 +140,6 @@ export function Table({ numRows, className, data, current_page, total, onChildEd
                                                                         </IconButton>
                                                                     </td>
                                                                 );
-                                                                break;
                                                             default:
                                                                 return (
                                                                     <td key={`body-${i}-content-${j}`}>

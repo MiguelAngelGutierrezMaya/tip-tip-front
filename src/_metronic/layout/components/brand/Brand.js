@@ -1,9 +1,7 @@
 import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import objectPath from "object-path";
-import SVG from "react-inlinesvg";
 import { useHtmlClassService } from "../../_core/MetronicLayout";
-import { toAbsoluteUrl } from "../../../_helpers";
 
 export function Brand() {
   const uiService = useHtmlClassService();

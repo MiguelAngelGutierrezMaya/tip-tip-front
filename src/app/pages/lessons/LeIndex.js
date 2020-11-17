@@ -42,7 +42,7 @@ import { FormattedMessage } from "react-intl";
 /**
  * Icons
  */
-import { Publish, Delete, Schedule, CheckCircleOutline, Error, Send } from '@material-ui/icons';
+import { Publish, Delete, Schedule, CheckCircleOutline, Error } from '@material-ui/icons';
 
 /**
  * Services
@@ -158,6 +158,9 @@ export const LeIndex = () => {
       },
       {
         name: (<FormattedMessage id="DASHBOARD.CONTENT.LESSONS.LIST.TABLE.UNIT"></FormattedMessage>)
+      },
+      {
+        name: (<FormattedMessage id="DASHBOARD.CONTENT.LESSONS.LIST.TABLE.LEVEL"></FormattedMessage>)
       },
       {
         name: (<FormattedMessage id="DASHBOARD.CONTENT.LESSONS.LIST.TABLE.LAST_LESSON"></FormattedMessage>)
@@ -278,6 +281,11 @@ export const LeIndex = () => {
           {
             name: 'unit',
             value: el.unit.name,
+            action: null
+          },
+          {
+            name: 'level',
+            value: el.unit.level.name,
             action: null
           },
           {

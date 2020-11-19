@@ -163,12 +163,20 @@ const formInitData = {
     data: "",
     type: ["required"],
   },
-  comments: {
-    error: false,
-    msj: "",
-    data: "",
-    type: ["required"],
-  }
+  comments: [
+    {
+      error: false,
+      msj: "",
+      data: "",
+      type: ["required"],
+    },
+    {
+      error: false,
+      msj: "",
+      data: "",
+      type: ["required"],
+    }
+  ]
 };
 
 const priorities = [
@@ -779,7 +787,11 @@ class Calendar extends React.PureComponent {
 
     this.initData = () => {
       Object.entries(formInitData).forEach(([key, value]) => {
-        if (typeof formInitData[key].data == "string")
+        if (Array.isArray(formInitData[key]))
+          for (let i = 0; i < formInitData[key].length; i++) {
+            formInitData[key][i].data = "";
+          }
+        else if (typeof formInitData[key].data == "string")
           formInitData[key].data = "";
         else if (typeof formInitData[key].data == "object")
           if (formInitData[key].label === "estudiante")
@@ -806,11 +818,17 @@ class Calendar extends React.PureComponent {
 
       this.setState({ currentPriority: value, resources: nextResources });
     }
-
+    this.getFormData = () => {
+      return { ...this.state.formData };
+    }
     this.handleChangeFormData = (property, value) => {
-      const { formData } = this.state;
-      const form_data_obj = { ...formData };
-      form_data_obj[property].data = value;
+      const form_data_obj = this.getFormData();
+      if (form_data_obj[property]) form_data_obj[property].data = value;
+      this.setState({ formData: { ...form_data_obj } });
+    }
+    this.handleChangeFormDataArray = (property, index, value) => {
+      const form_data_obj = this.getFormData();
+      if (form_data_obj[property]) form_data_obj[property][index].data = value;
       this.setState({ formData: { ...form_data_obj } });
     }
 
@@ -819,7 +837,13 @@ class Calendar extends React.PureComponent {
     this.handleChangeSentencesLearned = (event) =>
       this.handleChangeFormData("sentences_learned", event.target.value);
     this.handleChangeComments = (event) =>
-      this.handleChangeFormData("comments", event.target.value);
+      this.handleChangeFormDataArray("comments", parseInt(event.target.getAttribute('data-index')),
+        {
+          id: event.target.getAttribute('data-id'),
+          value: event.target.value
+        }
+      );
+
     this.handleChangeInit = (event, setEndToo = true) => {
       this.handleChangeFormData("init", event.target.value);
       const timezone = moment(event.target.value.replace('T', ' ')).tz("America/Bogota");
@@ -986,18 +1010,20 @@ class Calendar extends React.PureComponent {
       const { formData } = this.state;
       const obj_data = {
         class_obj_id: tooltipClassData.id,
-        student_class_id: formData.students.data[0].id,
+        students: this.state.students,
         date: formData.init.data.replace("T", " "),
         vocabulary_learned: formData.vocabulary_learned.data,
         sentences_learned: formData.sentences_learned.data,
-        comments: formData.comments.data,
         type: formData.type.data ? 'PUBLIC' : 'DRAFT'
       };
       var i18n;
       if (typeConfirm === 'edit') {
         i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT";
+        obj_data['student_class_id'] = formData.students.data[0].id;
+        obj_data['comments'] = formData.comments[0].data.value;
         obj_data['id'] = formData.id.data;
       } else {
+        obj_data['comments'] = formData.comments;
         i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS";
       }
       this.saveOrEditMemo(token, obj_data, i18n, typeConfirm);
@@ -1153,6 +1179,7 @@ class Calendar extends React.PureComponent {
     this.handleEditClassData = async () => {
       await this.updateDataForEdit();
       this.handleChangeLessonMemo(null, tooltipClassData.lesson);
+      this.updateDatesInitEnd();
       this.handleEventModal("edit_class_data");
     }
     this.handleEditMemoData = async () => {
@@ -1244,15 +1271,23 @@ class Calendar extends React.PureComponent {
     this.handleCreateMemo = async (event) => {
       event.preventDefault();
       const token = auth.getToken();
-      const { formData } = this.state;
+      var { formData } = this.state;
+      var { comments } = formData;
       delete formData['end'];
       delete formData['teacher'];
       delete formData['url'];
+      delete formData['comments']
+      delete formData['students']
       let error = false;
-      this.setState({ formData: { ...validator(formData) } });
+      formData = { ...validator(formData) };
+      comments = comments.map(el => { return { ...(validator({ comment: el })).comment } });
+      formData.comments = [...comments];
+      formData.students = [...this.state.students];
+      this.setState({ formData: { ...formData } });
       Object.entries(this.state.formData).forEach(([key, value]) => {
         if (value.error) error = true;
       });
+      for (let i = 0; i < formData.comments.length; i++) if (formData.comments[i].error) error = true;
       if (error)
         return this.setState({
           snackbar: {
@@ -1270,11 +1305,11 @@ class Calendar extends React.PureComponent {
       } else {
         await this.saveOrEditMemo(token, {
           class_obj_id: tooltipClassData.id,
-          student_class_id: formData.students.data[0].id,
+          students: this.state.students,
           date: formData.init.data.replace("T", " "),
           vocabulary_learned: formData.vocabulary_learned.data,
           sentences_learned: formData.sentences_learned.data,
-          comments: formData.comments.data,
+          comments: formData.comments,
           type: formData.type.data ? 'PUBLIC' : 'DRAFT'
         }, "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS", "create");
       }
@@ -1282,12 +1317,17 @@ class Calendar extends React.PureComponent {
     this.handleSaveEditMemo = async (event) => {
       event.preventDefault();
       const token = auth.getToken();
-      const { formData } = this.state;
+      var { formData } = this.state;
+      var { comments } = formData;
       delete formData['end'];
       delete formData['teacher'];
       delete formData['url'];
+      delete formData['comments']
       let error = false;
-      this.setState({ formData: { ...validator(formData) } });
+      formData = { ...validator(formData) };
+      comments = comments.map(el => { return { ...(validator({ comment: el })).comment } });
+      formData.comments = [...comments];
+      this.setState({ formData: { ...formData } });
       Object.entries(this.state.formData).forEach(([key, value]) => {
         if (value.error) error = true;
       });
@@ -1313,7 +1353,7 @@ class Calendar extends React.PureComponent {
           date: formData.init.data.replace("T", " "),
           vocabulary_learned: formData.vocabulary_learned.data,
           sentences_learned: formData.sentences_learned.data,
-          comments: formData.comments.data,
+          comments: formData.comments[0].data.value,
           type: formData.type.data ? 'PUBLIC' : 'DRAFT'
         }, "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT", "edit");
       }
@@ -1327,7 +1367,17 @@ class Calendar extends React.PureComponent {
       this.handleChangeLessonMemo(null, tooltipClassData.lesson);
       this.handleChangeVocabularyLearned({ target: { value: memo.data.vocabulary_learned } });
       this.handleChangeSentencesLearned({ target: { value: memo.data.sentences_learned } });
-      this.handleChangeComments({ target: { value: memo.data.comments } });
+      this.handleChangeComments({
+        target: {
+          value: memo.data.comments,
+          getAttribute: (type) => {
+            switch (type) {
+              case 'data-index': return 0;
+              case 'data-id': return memo.data.student_class.id;
+            }
+          }
+        }
+      });
       this.handleChangeInit({ target: { value: memo.data.date } });
       this.handleChangeStudentsMemo(null, {
         id: memo.data.student_class.id,
@@ -2025,46 +2075,8 @@ class Calendar extends React.PureComponent {
                                           item
                                           xs={12}
                                           sm={12}
-                                          md={6}
-                                          lg={6}
-                                          className="pt-2 pb-2 pl-2 pr-2"
-                                        >
-                                          <FormControl
-                                            component="fieldset"
-                                            className="wd-full"
-                                          >
-                                            <FormLabel component="legend">
-                                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.STUDENT"></FormattedMessage>
-                                            </FormLabel>
-                                            <Autocomplete
-                                              options={students}
-                                              getOptionLabel={(option) =>
-                                                option.name ? option.name : ""
-                                              }
-                                              size={"small"}
-                                              value={formData.students.data.length > 0 ? formData.students.data[0] : null}
-                                              onChange={this.handleChangeStudentsMemo}
-                                              className="mt-2"
-                                              style={{ width: "100%" }}
-                                              renderInput={(params) => (
-                                                <TextField
-                                                  {...params}
-                                                  label=""
-                                                  variant="outlined"
-                                                  style={{ height: "40px" }}
-                                                  error={formData.students.error}
-                                                  helperText={formData.students.msj}
-                                                />
-                                              )}
-                                            />
-                                          </FormControl>
-                                        </Grid>
-                                        <Grid
-                                          item
-                                          xs={12}
-                                          sm={12}
-                                          md={6}
-                                          lg={6}
+                                          md={12}
+                                          lg={12}
                                           className="pt-2 pb-2 pl-2 pr-2"
                                         >
                                           <FormControl
@@ -2109,7 +2121,6 @@ class Calendar extends React.PureComponent {
                                             }
                                           </FormControl>
                                         </Grid>
-
                                         <Grid
                                           item
                                           xs={12}
@@ -2136,32 +2147,39 @@ class Calendar extends React.PureComponent {
                                             }
                                           </FormControl>
                                         </Grid>
-                                        <Grid
-                                          item
-                                          xs={12}
-                                          sm={12}
-                                          md={12}
-                                          lg={12}
-                                          className="pt-2 pb-2 pl-2 pr-2"
-                                        >
-                                          <FormControl
-                                            component="fieldset"
-                                            className="wd-full"
-                                          >
-                                            <FormLabel component="legend">
-                                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.COMMENTS"></FormattedMessage>
-                                            </FormLabel>
-                                            <TextareaAutosize
-                                              aria-label="minimum height"
-                                              rowsMin={3}
-                                              value={formData.comments.data}
-                                              onChange={this.handleChangeComments}
-                                            />
-                                            {
-                                              formData.comments.error ? <span className={"text-danger-light"}>{formData.comments.msj}</span> : (<></>)
-                                            }
-                                          </FormControl>
-                                        </Grid>
+                                        {
+                                          students.map((el, index) => (
+                                            <Grid
+                                              item
+                                              xs={12}
+                                              sm={12}
+                                              md={6}
+                                              lg={6}
+                                              className="pt-2 pb-2 pl-2 pr-2"
+                                              key={`comment-student-${el.id}`}
+                                            >
+                                              <FormControl
+                                                component="fieldset"
+                                                className="wd-full"
+                                              >
+                                                <FormLabel component="legend">
+                                                  <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.COMMENTS"></FormattedMessage> ({el.name})
+                                                </FormLabel>
+                                                <TextareaAutosize
+                                                  aria-label="minimum height"
+                                                  rowsMin={3}
+                                                  value={formData.comments ? formData.comments[index].data.value : ""}
+                                                  data-id={el.id}
+                                                  data-index={index}
+                                                  onChange={this.handleChangeComments}
+                                                />
+                                                {
+                                                  formData.comments ? formData.comments[index].error ? <span className={"text-danger-light"}>{formData.comments[index].msj}</span> : (<></>) : (<></>)
+                                                }
+                                              </FormControl>
+                                            </Grid>
+                                          ))
+                                        }
                                         <Grid
                                           item
                                           xs={12}
@@ -2473,11 +2491,13 @@ class Calendar extends React.PureComponent {
                           <TextareaAutosize
                             aria-label="minimum height"
                             rowsMin={3}
-                            value={formData.comments.data}
+                            value={formData.comments ? formData.comments[0].data.value : ''}
+                            data-id={formData.students.data.length > 0 ? formData.students.data[0].id : null}
+                            data-index={0}
                             onChange={this.handleChangeComments}
                           />
                           {
-                            formData.comments.error ? <span className={"text-danger-light"}>{formData.comments.msj}</span> : (<></>)
+                            formData.comments ? formData.comments[0].error ? <span className={"text-danger-light"}>{formData.comments[0].msj}</span> : (<></>) : (<></>)
                           }
                         </FormControl>
                       </Grid>

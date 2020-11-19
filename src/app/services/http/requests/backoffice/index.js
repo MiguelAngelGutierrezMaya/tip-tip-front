@@ -191,8 +191,24 @@ export default {
             return verifyError(error);
         })
     },
-    async getCities({ token }) {
+    async getCountries({ token }) {
+        return await axios.get(routes_api.backend_tip_top().gateway.auth.countries, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        }).then(resp => {
+            return format.success(resp)
+        }).catch(error => {
+            return verifyError(error);
+        })
+    },
+    async getCities({ token }, data = {}) {
         return await axios.get(routes_api.backend_tip_top().gateway.auth.cities, {
+            params: {
+                ...data
+            },
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',

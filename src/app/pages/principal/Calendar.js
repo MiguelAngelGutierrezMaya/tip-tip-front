@@ -62,7 +62,6 @@ import { Autocomplete } from "@material-ui/lab";
 import Alert from "@material-ui/lab/Alert";
 import { withStyles, makeStyles, fade } from "@material-ui/core/styles";
 import { FormattedMessage } from "react-intl";
-import Draggable from 'react-draggable';
 
 /**
  * Icons
@@ -164,12 +163,20 @@ const formInitData = {
     data: "",
     type: ["required"],
   },
-  comments: {
-    error: false,
-    msj: "",
-    data: "",
-    type: ["required"],
-  }
+  comments: [
+    {
+      error: false,
+      msj: "",
+      data: "",
+      type: ["required"],
+    },
+    {
+      error: false,
+      msj: "",
+      data: "",
+      type: ["required"],
+    }
+  ]
 };
 
 const priorities = [
@@ -362,8 +369,10 @@ const WeekViewTimeTableCell = withStyles(groupingStyles, {
     <WeekView.TimeTableCell
       onDoubleClick={
         () => {
-          datesCellSelected = { ...restProps };
-          document.getElementById('button-add-class-by-cell-selected').click();
+          if (roles[auth.getUserInfo().user.role.name] === roles.ROLE_ADMIN) {
+            datesCellSelected = { ...restProps };
+            document.getElementById('button-add-class-by-cell-selected').click();
+          }
         }
       }
       className={classNames({
@@ -422,9 +431,11 @@ const FlexibleSpace = withStyles(styles, {
 
 const Appointment = ({ children, ...restProps }) => {
   const { props } = children[1];
+  var background;
   if (props.data.state)
-    var background = getInitLayoutConfig().js.colors.theme.base.primary;
-  else var background = getInitLayoutConfig().js.colors.theme.base.secondary;
+    background = getInitLayoutConfig().js.colors.theme.base.primary;
+  else
+    background = getInitLayoutConfig().js.colors.theme.base.secondary;
 
   return (
     <Appointments.Appointment
@@ -436,22 +447,24 @@ const Appointment = ({ children, ...restProps }) => {
       className={"p-2 text-white"}
     >
       <Grid container>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
+        <Grid item xs={12} sm={6} md={6} lg={6}>
           {props.data.state ? (
-            <span>
-              {props.data.title.length <= 10
-                ? props.data.title
-                : `${props.data.title.substring(0, 10)}...`}
-            </span>
+            props.data.students.map((el, index) => (
+              <>
+                <span key={`student-appointment-${el.id}-${index}`}>
+                  {el.user.first_name}<br />
+                </span>
+              </>
+            ))
           ) : (
               <span><FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.CANCELED"></FormattedMessage></span>
             )}
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12} className={"text-right"}>
+        <Grid item xs={12} sm={6} md={6} lg={6} className={"text-right"} style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
           {props.data.state ? (
             props.data.students.map((el, index) => (
               <i
-                key={`icon-appointment-${index}`}
+                key={`icon-appointment-${el.id}-${index}`}
                 className={"flaticon2-user text-white"}
                 style={{ fontSize: 12 }}
               ></i>
@@ -461,7 +474,7 @@ const Appointment = ({ children, ...restProps }) => {
             )}
         </Grid>
       </Grid>
-    </Appointments.Appointment>
+    </Appointments.Appointment >
   );
 };
 
@@ -472,6 +485,8 @@ const TooltipContent = ({
 }) => {
   const resource = appointmentResources[0];
   const classes = useTooltipContentStyles({ color: resource.color });
+  const endDate = new Date(parseInt(formatDate(appointmentData.endDate, { year: "numeric" })), (parseInt(formatDate(appointmentData.endDate, { month: "numeric" })) - 1), parseInt(formatDate(appointmentData.endDate, { day: "numeric" })), parseInt(formatDate(appointmentData.endDate, { hour: "numeric", hour12: false })) > 23 ? 0 : parseInt(formatDate(appointmentData.endDate, { hour: "numeric", hour12: false })), parseInt(formatDate(appointmentData.endDate, { minute: "numeric" })), parseInt(formatDate(appointmentData.endDate, { second: "numeric" })));
+  const currentDate = new Date(parseInt(moment().tz("America/Bogota").format("YYYY")), (parseInt(moment().tz("America/Bogota").format("MM")) - 1), parseInt(moment().tz("America/Bogota").format("DD")), parseInt(moment().tz("America/Bogota").format("HH")) > 23 ? 0 : parseInt(moment().tz("America/Bogota").format("HH")), parseInt(moment().tz("America/Bogota").format("mm")), 0);
   return (
     <div
       className={classes.content}
@@ -499,13 +514,13 @@ const TooltipContent = ({
           </div>
         </Grid>
       </Grid>
-      {appointmentData.state ? (
-        <>
-          <Grid
-            container
-            alignItems="center"
-            className={classes.contentContainer}
-          >
+      <Grid
+        container
+        alignItems="center"
+        className={classes.contentContainer}
+      >
+        {appointmentData.state ? (
+          <>
             <Grid item xs={2} className={classes.textCenter}>
               <AccessTime className={classes.icon} />
             </Grid>
@@ -520,9 +535,10 @@ const TooltipContent = ({
                   minute: "numeric",
                 })}`}
                 <a
-                  href="#"
+                  href="/"
                   className={"ml-2"}
-                  onClick={() => {
+                  onClick={(event) => {
+                    event.preventDefault();
                     tooltipClassData = appointmentData;
                     document.getElementById("button-show-detail-class").click();
                   }}
@@ -534,13 +550,19 @@ const TooltipContent = ({
             <Grid item xs={2} className={classes.textCenter}></Grid>
             <Grid item xs={10}>
               <div className={classes.text}>
-                <a href={appointmentData.url} target="_blank">
+                <a href={appointmentData.url} target="_blank" rel="noopener noreferrer">
                   {appointmentData.url}
                 </a>
               </div>
             </Grid>
-          </Grid>
-          <Grid container alignItems="center">
+          </>
+        ) : (
+            <></>
+          )}
+      </Grid>
+      <Grid container alignItems="center">
+        {appointmentData.state ? (
+          <>
             <Grid
               className={classNames(
                 classes.contentItemIcon,
@@ -579,39 +601,18 @@ const TooltipContent = ({
                   .format("YYYY-MM-DD h:mm A")}
               </span>
             </Grid>
-          </Grid>
-          <Grid container alignItems="center" className={"mt-2"}>
-            {
-              roles[auth.getUserInfo().user.role.name] === roles.ROLE_ADMIN ||
-                roles[auth.getUserInfo().user.role.name] === roles.ROLE_USER ? (
-                  <Grid
-                    item
-                    xs={12}
-                  >
-                    <Grid container alignItems="center">
-                      <Grid
-                        className={classNames(
-                          classes.contentItemIcon,
-                          classes.icon,
-                          classes.colorfulContent
-                        )}
-                        item
-                        xs={2}
-                      >
-                        <span>Pr</span>
-                      </Grid>
-                      <Grid item xs={10}>
-                        <span>{appointmentData.teacher.first_name} {appointmentData.teacher.last_name}</span>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                ) : (<></>)
-            }
-            {appointmentData.students.map((el, index) => (
+          </>
+        ) : (
+            <></>
+          )}
+      </Grid>
+      <Grid container alignItems="center" className={"mt-2"}>
+        {
+          roles[auth.getUserInfo().user.role.name] === roles.ROLE_ADMIN ||
+            roles[auth.getUserInfo().user.role.name] === roles.ROLE_USER ? (
               <Grid
                 item
                 xs={12}
-                key={`container-tooltip-appointment-${appointmentData.id}-${index}`}
               >
                 <Grid container alignItems="center">
                   <Grid
@@ -623,37 +624,63 @@ const TooltipContent = ({
                     item
                     xs={2}
                   >
-                    <i
-                      className={"flaticon2-user text-purple"}
-                      style={{ fontSize: 12 }}
-                    ></i>
+                    <span>Pr</span>
                   </Grid>
                   <Grid item xs={10}>
-                    {`${el.user.first_name} ${el.user.last_name}`}
-                    {
-                      roles[auth.getUserInfo().user.role.name] === roles.ROLE_TEACHER ? (
-                        <a
-                          href="#"
-                          className={"ml-2"}
-                          onClick={() => {
-                            tooltipClassData = appointmentData;
-                            studentSelected = el;
-                            document.getElementById("button-make-notification-missing-student").click();
-                          }}
-                        >
-                          <i className={"fas fa-times text-purple"}></i>
-                        </a>
-                      ) : (<></>)
-                    }
+                    <span>{appointmentData.teacher.first_name} {appointmentData.teacher.last_name}</span>
                   </Grid>
                 </Grid>
               </Grid>
-            ))}
+            ) : (<></>)
+        }
+        {appointmentData.students.map((el, index) => (
+          <Grid
+            item
+            xs={12}
+            key={`container-tooltip-appointment-${appointmentData.id}-${index}`}
+          >
+            <Grid container alignItems="center">
+              <Grid
+                className={classNames(
+                  classes.contentItemIcon,
+                  classes.icon,
+                  classes.colorfulContent
+                )}
+                item
+                xs={2}
+              >
+                <i
+                  className={"flaticon2-user text-purple"}
+                  style={{ fontSize: 12 }}
+                ></i>
+              </Grid>
+              <Grid item xs={10}>
+                {`${el.user.first_name} ${el.user.last_name}`}
+                {appointmentData.state ?
+                  roles[auth.getUserInfo().user.role.name] === roles.ROLE_TEACHER ?
+                    currentDate > endDate ? (
+                      <a
+                        href="/"
+                        className={"ml-2"}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          tooltipClassData = appointmentData;
+                          studentSelected = el;
+                          document.getElementById("button-make-notification-missing-student").click();
+                        }}
+                      >
+                        <i className={"fas fa-times text-purple"}></i>
+                      </a>
+                    ) :
+                      (<></>) :
+                    (<></>) :
+                  (<></>)
+                }
+              </Grid>
+            </Grid>
           </Grid>
-        </>
-      ) : (
-          <></>
-        )}
+        ))}
+      </Grid>
     </div>
   );
 };
@@ -751,7 +778,7 @@ class Calendar extends React.PureComponent {
           instances: priorities,
         },
       ],
-    };
+    }
 
     /**
      * Handlers
@@ -760,7 +787,11 @@ class Calendar extends React.PureComponent {
 
     this.initData = () => {
       Object.entries(formInitData).forEach(([key, value]) => {
-        if (typeof formInitData[key].data == "string")
+        if (Array.isArray(formInitData[key]))
+          for (let i = 0; i < formInitData[key].length; i++) {
+            formInitData[key][i].data = "";
+          }
+        else if (typeof formInitData[key].data == "string")
           formInitData[key].data = "";
         else if (typeof formInitData[key].data == "object")
           if (formInitData[key].label === "estudiante")
@@ -769,16 +800,13 @@ class Calendar extends React.PureComponent {
       });
       this.setState({ formData: { ...formInitData } });
     }
-
     this.currentViewNameChange = (currentViewName) => {
       this.setState({ currentViewName });
-    };
-
+    }
     this.currentDateChange = (currentDate) => {
       this.setState({ currentDate });
       return this.getClasses();
-    };
-
+    }
     this.priorityChange = (value) => {
       const { resources } = this.state;
       const nextResources = [
@@ -789,21 +817,33 @@ class Calendar extends React.PureComponent {
       ];
 
       this.setState({ currentPriority: value, resources: nextResources });
-    };
-
+    }
+    this.getFormData = () => {
+      return { ...this.state.formData };
+    }
     this.handleChangeFormData = (property, value) => {
-      const { formData } = this.state;
-      const form_data_obj = { ...formData };
-      form_data_obj[property].data = value;
+      const form_data_obj = this.getFormData();
+      if (form_data_obj[property]) form_data_obj[property].data = value;
       this.setState({ formData: { ...form_data_obj } });
-    };
+    }
+    this.handleChangeFormDataArray = (property, index, value) => {
+      const form_data_obj = this.getFormData();
+      if (form_data_obj[property]) form_data_obj[property][index].data = value;
+      this.setState({ formData: { ...form_data_obj } });
+    }
 
     this.handleChangeVocabularyLearned = (event) =>
       this.handleChangeFormData("vocabulary_learned", event.target.value);
     this.handleChangeSentencesLearned = (event) =>
       this.handleChangeFormData("sentences_learned", event.target.value);
     this.handleChangeComments = (event) =>
-      this.handleChangeFormData("comments", event.target.value);
+      this.handleChangeFormDataArray("comments", parseInt(event.target.getAttribute('data-index')),
+        {
+          id: event.target.getAttribute('data-id'),
+          value: event.target.value
+        }
+      );
+
     this.handleChangeInit = (event, setEndToo = true) => {
       this.handleChangeFormData("init", event.target.value);
       const timezone = moment(event.target.value.replace('T', ' ')).tz("America/Bogota");
@@ -846,13 +886,15 @@ class Calendar extends React.PureComponent {
                 teacher: el.teacher,
                 current_lesson: el.current_lesson
               };
+            else
+              return {};
           }),
         ];
         if (this.state.byStudent) this.setState({ allStudents: data });
         else this.setState({ students: data });
       }
       return this.handleChangeFormData("lesson", value);
-    };
+    }
     this.handleChangeLessonMemo = async (event, value) => this.handleChangeLesson(event, value, false);
     this.handleChangeTeacher = (event, value) => {
       this.handleChangeFormData("teacher", value);
@@ -958,7 +1000,7 @@ class Calendar extends React.PureComponent {
           type_two: false,
         },
       });
-    };
+    }
     this.handleCloseConfirmCancel = () =>
       this.setState({
         openConfirm: false
@@ -968,18 +1010,21 @@ class Calendar extends React.PureComponent {
       const { formData } = this.state;
       const obj_data = {
         class_obj_id: tooltipClassData.id,
-        student_class_id: formData.students.data[0].id,
+        students: this.state.students,
         date: formData.init.data.replace("T", " "),
         vocabulary_learned: formData.vocabulary_learned.data,
         sentences_learned: formData.sentences_learned.data,
-        comments: formData.comments.data,
         type: formData.type.data ? 'PUBLIC' : 'DRAFT'
       };
+      var i18n;
       if (typeConfirm === 'edit') {
-        var i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT";
+        i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT";
+        obj_data['student_class_id'] = formData.students.data[0].id;
+        obj_data['comments'] = formData.comments[0].data.value;
         obj_data['id'] = formData.id.data;
       } else {
-        var i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS";
+        obj_data['comments'] = formData.comments;
+        i18n = "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS";
       }
       this.saveOrEditMemo(token, obj_data, i18n, typeConfirm);
     }
@@ -995,10 +1040,13 @@ class Calendar extends React.PureComponent {
     this.handleEventModal = (type) => {
       this.setState({ typeFormModal: type });
       return this.handleOpenModal();
-    };
+    }
     this.updateDatesInitEnd = (current = true) => {
-      if (current) var timezone = moment().tz("America/Bogota");
-      else var timezone = moment(`${datesCellSelected.startDate.getFullYear()}-${(datesCellSelected.startDate.getMonth() + 1)}-${parseInt(datesCellSelected.startDate.getDate()) < 10 ? '0' + datesCellSelected.startDate.getDate() : datesCellSelected.startDate.getDate()} ${parseInt(datesCellSelected.startDate.getHours()) < 10 ? '0' + datesCellSelected.startDate.getHours() : datesCellSelected.startDate.getHours()}:${parseInt(datesCellSelected.startDate.getMinutes()) < 10 ? '0' + datesCellSelected.startDate.getMinutes() : datesCellSelected.startDate.getMinutes()}:00`).tz("America/Bogota");
+      var timezone;
+      if (current)
+        timezone = moment().tz("America/Bogota");
+      else
+        timezone = moment(`${datesCellSelected.startDate.getFullYear()}-${(datesCellSelected.startDate.getMonth() + 1)}-${parseInt(datesCellSelected.startDate.getDate()) < 10 ? '0' + datesCellSelected.startDate.getDate() : datesCellSelected.startDate.getDate()} ${parseInt(datesCellSelected.startDate.getHours()) < 10 ? '0' + datesCellSelected.startDate.getHours() : datesCellSelected.startDate.getHours()}:${parseInt(datesCellSelected.startDate.getMinutes()) < 10 ? '0' + datesCellSelected.startDate.getMinutes() : datesCellSelected.startDate.getMinutes()}:00`).tz("America/Bogota");
       const init = timezone.format("YYYY-MM-DDTHH:mm");
       const end = timezone.add(25, 'minutes').format("YYYY-MM-DDTHH:mm");
       this.handleChangeInit({ target: { value: init } }, false);
@@ -1007,7 +1055,7 @@ class Calendar extends React.PureComponent {
     this.handleAddClass = () => {
       this.updateDatesInitEnd();
       return this.handleEventModal("add_class");
-    };
+    }
     this.handleAddClassByCell = () => {
       this.updateDatesInitEnd(false);
       return this.handleEventModal("add_class");
@@ -1108,7 +1156,7 @@ class Calendar extends React.PureComponent {
       });
       this.setState({ materials: { ...arr_materials }, memos: { ...arr_memos } });
       this.handleEventModal("class_data");
-    };
+    }
     this.updateDataForEdit = async () => {
       const token = auth.getToken();
       const response_students = await backoffice_service().getClasses({ token, page: 0 }, { class_id: tooltipClassData.id });
@@ -1131,8 +1179,9 @@ class Calendar extends React.PureComponent {
     this.handleEditClassData = async () => {
       await this.updateDataForEdit();
       this.handleChangeLessonMemo(null, tooltipClassData.lesson);
+      this.updateDatesInitEnd();
       this.handleEventModal("edit_class_data");
-    };
+    }
     this.handleEditMemoData = async () => {
       this.handleEventModal("edit_memo_data");
     }
@@ -1182,16 +1231,19 @@ class Calendar extends React.PureComponent {
       });
       this.initData();
       this.handleCloseModal();
-      return this.getClasses();
-    };
+      await this.loadData();
+      await this.loadAllStudents();
+      return await this.getClasses();
+    }
     this.saveOrEditMemo = async (token, data, i18n, type) => {
-      if (type == 'create') {
-        var response = await backoffice_service().createMemo({
+      var response;
+      if (type === 'create') {
+        response = await backoffice_service().createMemo({
           token,
           data
         });
       } else {
-        var response = await backoffice_service().editMemo({
+        response = await backoffice_service().editMemo({
           token,
           data
         });
@@ -1204,7 +1256,7 @@ class Calendar extends React.PureComponent {
 
       typeConfirm = null;
       this.initData();
-      if (type == 'create') this.handleCloseModal();
+      if (type === 'create') this.handleCloseModal();
       else document.getElementById('button-show-detail-class').click();
 
       this.setState({
@@ -1215,19 +1267,27 @@ class Calendar extends React.PureComponent {
           message: (<FormattedMessage id={i18n}></FormattedMessage>),
         },
       });
-    };
+    }
     this.handleCreateMemo = async (event) => {
       event.preventDefault();
       const token = auth.getToken();
-      const { formData } = this.state;
+      var { formData } = this.state;
+      var { comments } = formData;
       delete formData['end'];
       delete formData['teacher'];
       delete formData['url'];
+      delete formData['comments']
+      delete formData['students']
       let error = false;
-      this.setState({ formData: { ...validator(formData) } });
+      formData = { ...validator(formData) };
+      comments = comments.map(el => { return { ...(validator({ comment: el })).comment } });
+      formData.comments = [...comments];
+      formData.students = [...this.state.students];
+      this.setState({ formData: { ...formData } });
       Object.entries(this.state.formData).forEach(([key, value]) => {
         if (value.error) error = true;
       });
+      for (let i = 0; i < formData.comments.length; i++) if (formData.comments[i].error) error = true;
       if (error)
         return this.setState({
           snackbar: {
@@ -1245,24 +1305,29 @@ class Calendar extends React.PureComponent {
       } else {
         await this.saveOrEditMemo(token, {
           class_obj_id: tooltipClassData.id,
-          student_class_id: formData.students.data[0].id,
+          students: this.state.students,
           date: formData.init.data.replace("T", " "),
           vocabulary_learned: formData.vocabulary_learned.data,
           sentences_learned: formData.sentences_learned.data,
-          comments: formData.comments.data,
+          comments: formData.comments,
           type: formData.type.data ? 'PUBLIC' : 'DRAFT'
         }, "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.SUCCESS", "create");
       }
-    };
+    }
     this.handleSaveEditMemo = async (event) => {
       event.preventDefault();
       const token = auth.getToken();
-      const { formData } = this.state;
+      var { formData } = this.state;
+      var { comments } = formData;
       delete formData['end'];
       delete formData['teacher'];
       delete formData['url'];
+      delete formData['comments']
       let error = false;
-      this.setState({ formData: { ...validator(formData) } });
+      formData = { ...validator(formData) };
+      comments = comments.map(el => { return { ...(validator({ comment: el })).comment } });
+      formData.comments = [...comments];
+      this.setState({ formData: { ...formData } });
       Object.entries(this.state.formData).forEach(([key, value]) => {
         if (value.error) error = true;
       });
@@ -1288,11 +1353,11 @@ class Calendar extends React.PureComponent {
           date: formData.init.data.replace("T", " "),
           vocabulary_learned: formData.vocabulary_learned.data,
           sentences_learned: formData.sentences_learned.data,
-          comments: formData.comments.data,
+          comments: formData.comments[0].data.value,
           type: formData.type.data ? 'PUBLIC' : 'DRAFT'
         }, "DASHBOARD.CONTENT.CALENDAR.CREATE.MEMOS.MESSAGES.EDIT", "edit");
       }
-    };
+    }
     this.handleEditMemo = async (event) => {
       let id = parseInt(event.currentTarget.firstChild.firstChild.getAttribute('data-id'));
       const { memos } = this.state;
@@ -1302,7 +1367,17 @@ class Calendar extends React.PureComponent {
       this.handleChangeLessonMemo(null, tooltipClassData.lesson);
       this.handleChangeVocabularyLearned({ target: { value: memo.data.vocabulary_learned } });
       this.handleChangeSentencesLearned({ target: { value: memo.data.sentences_learned } });
-      this.handleChangeComments({ target: { value: memo.data.comments } });
+      this.handleChangeComments({
+        target: {
+          value: memo.data.comments,
+          getAttribute: (type) => {
+            switch (type) {
+              case 'data-index': return 0;
+              case 'data-id': return memo.data.student_class.id;
+            }
+          }
+        }
+      });
       this.handleChangeInit({ target: { value: memo.data.date } });
       this.handleChangeStudentsMemo(null, {
         id: memo.data.student_class.id,
@@ -1344,7 +1419,6 @@ class Calendar extends React.PureComponent {
         },
       });
     }
-
     this.flexibleSpace = connectProps(FlexibleSpace, () => {
       const { currentPriority } = this.state;
       return {
@@ -1485,7 +1559,9 @@ class Calendar extends React.PureComponent {
               name: `${el.user.first_name} ${el.user.last_name}`,
               teacher: el.teacher,
               current_lesson: el.current_lesson
-            };
+            }
+          else
+            return {}
         }),
       ],
     });
@@ -1999,46 +2075,8 @@ class Calendar extends React.PureComponent {
                                           item
                                           xs={12}
                                           sm={12}
-                                          md={6}
-                                          lg={6}
-                                          className="pt-2 pb-2 pl-2 pr-2"
-                                        >
-                                          <FormControl
-                                            component="fieldset"
-                                            className="wd-full"
-                                          >
-                                            <FormLabel component="legend">
-                                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.STUDENT"></FormattedMessage>
-                                            </FormLabel>
-                                            <Autocomplete
-                                              options={students}
-                                              getOptionLabel={(option) =>
-                                                option.name ? option.name : ""
-                                              }
-                                              size={"small"}
-                                              value={formData.students.data.length > 0 ? formData.students.data[0] : null}
-                                              onChange={this.handleChangeStudentsMemo}
-                                              className="mt-2"
-                                              style={{ width: "100%" }}
-                                              renderInput={(params) => (
-                                                <TextField
-                                                  {...params}
-                                                  label=""
-                                                  variant="outlined"
-                                                  style={{ height: "40px" }}
-                                                  error={formData.students.error}
-                                                  helperText={formData.students.msj}
-                                                />
-                                              )}
-                                            />
-                                          </FormControl>
-                                        </Grid>
-                                        <Grid
-                                          item
-                                          xs={12}
-                                          sm={12}
-                                          md={6}
-                                          lg={6}
+                                          md={12}
+                                          lg={12}
                                           className="pt-2 pb-2 pl-2 pr-2"
                                         >
                                           <FormControl
@@ -2083,7 +2121,6 @@ class Calendar extends React.PureComponent {
                                             }
                                           </FormControl>
                                         </Grid>
-
                                         <Grid
                                           item
                                           xs={12}
@@ -2110,32 +2147,39 @@ class Calendar extends React.PureComponent {
                                             }
                                           </FormControl>
                                         </Grid>
-                                        <Grid
-                                          item
-                                          xs={12}
-                                          sm={12}
-                                          md={12}
-                                          lg={12}
-                                          className="pt-2 pb-2 pl-2 pr-2"
-                                        >
-                                          <FormControl
-                                            component="fieldset"
-                                            className="wd-full"
-                                          >
-                                            <FormLabel component="legend">
-                                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.COMMENTS"></FormattedMessage>
-                                            </FormLabel>
-                                            <TextareaAutosize
-                                              aria-label="minimum height"
-                                              rowsMin={3}
-                                              value={formData.comments.data}
-                                              onChange={this.handleChangeComments}
-                                            />
-                                            {
-                                              formData.comments.error ? <span className={"text-danger-light"}>{formData.comments.msj}</span> : (<></>)
-                                            }
-                                          </FormControl>
-                                        </Grid>
+                                        {
+                                          students.map((el, index) => (
+                                            <Grid
+                                              item
+                                              xs={12}
+                                              sm={12}
+                                              md={6}
+                                              lg={6}
+                                              className="pt-2 pb-2 pl-2 pr-2"
+                                              key={`comment-student-${el.id}`}
+                                            >
+                                              <FormControl
+                                                component="fieldset"
+                                                className="wd-full"
+                                              >
+                                                <FormLabel component="legend">
+                                                  <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.MEMOS.COMMENTS"></FormattedMessage> ({el.name})
+                                                </FormLabel>
+                                                <TextareaAutosize
+                                                  aria-label="minimum height"
+                                                  rowsMin={3}
+                                                  value={formData.comments ? formData.comments[index].data.value : ""}
+                                                  data-id={el.id}
+                                                  data-index={index}
+                                                  onChange={this.handleChangeComments}
+                                                />
+                                                {
+                                                  formData.comments ? formData.comments[index].error ? <span className={"text-danger-light"}>{formData.comments[index].msj}</span> : (<></>) : (<></>)
+                                                }
+                                              </FormControl>
+                                            </Grid>
+                                          ))
+                                        }
                                         <Grid
                                           item
                                           xs={12}
@@ -2447,11 +2491,13 @@ class Calendar extends React.PureComponent {
                           <TextareaAutosize
                             aria-label="minimum height"
                             rowsMin={3}
-                            value={formData.comments.data}
+                            value={formData.comments ? formData.comments[0].data.value : ''}
+                            data-id={formData.students.data.length > 0 ? formData.students.data[0].id : null}
+                            data-index={0}
                             onChange={this.handleChangeComments}
                           />
                           {
-                            formData.comments.error ? <span className={"text-danger-light"}>{formData.comments.msj}</span> : (<></>)
+                            formData.comments ? formData.comments[0].error ? <span className={"text-danger-light"}>{formData.comments[0].msj}</span> : (<></>) : (<></>)
                           }
                         </FormControl>
                       </Grid>

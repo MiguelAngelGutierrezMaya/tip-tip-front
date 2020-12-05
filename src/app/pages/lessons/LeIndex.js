@@ -42,7 +42,7 @@ import { FormattedMessage } from "react-intl";
 /**
  * Icons
  */
-import { Publish, Delete, Schedule, CheckCircleOutline, Error, Send } from '@material-ui/icons';
+import { Publish, Delete, Schedule, CheckCircleOutline, Error } from '@material-ui/icons';
 
 /**
  * Services
@@ -158,6 +158,9 @@ export const LeIndex = () => {
       },
       {
         name: (<FormattedMessage id="DASHBOARD.CONTENT.LESSONS.LIST.TABLE.UNIT"></FormattedMessage>)
+      },
+      {
+        name: (<FormattedMessage id="DASHBOARD.CONTENT.LESSONS.LIST.TABLE.LEVEL"></FormattedMessage>)
       },
       {
         name: (<FormattedMessage id="DASHBOARD.CONTENT.LESSONS.LIST.TABLE.LAST_LESSON"></FormattedMessage>)
@@ -281,6 +284,11 @@ export const LeIndex = () => {
             action: null
           },
           {
+            name: 'level',
+            value: el.unit.level.name,
+            action: null
+          },
+          {
             name: 'parent',
             value: el.parent ? el.parent.title : null,
             action: null
@@ -352,7 +360,10 @@ export const LeIndex = () => {
 
   const handlePreChangePageMaterials = (event, page) => handleChangePageMaterials(event, lesson, page);
 
-  const findLessonByFilter = () => handleChangePage(null, 0);
+  const findLessonByFilter = (event) => {
+    event.preventDefault();
+    return handleChangePage(null, 0);
+  }
   const handleChangeFilterText = (event) => setFilterText(event.target.value);
 
   const handleChangeFormData = (property, value) => {
@@ -612,13 +623,13 @@ export const LeIndex = () => {
           <div className={classes.root}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6} lg={6}>
-                <form noValidate autoComplete="off">
+                <form onSubmit={findLessonByFilter} noValidate autoComplete="off">
                   <Grid container spacing={3}>
                     <Grid item xs={12} sm={10} md={10} lg={10}>
                       <TextField label={<FormattedMessage id="DASHBOARD.CONTENT.LESSONS.FIND.NAME.LABEL"></FormattedMessage>} variant="filled" value={filterText} className="wd-full search-text-field" size="small" onChange={handleChangeFilterText} />
                     </Grid>
                     <Grid item xs={6} sm={2} md={2} lg={2}>
-                      <Button variant="contained" color="secondary" size="large" className="btn-secondary btn-block h-40" onClick={findLessonByFilter}>
+                      <Button type={"submit"} variant="contained" color="secondary" size="large" className="btn-secondary btn-block h-40">
                         <FormattedMessage id="GENERAL.FORM.ACTIONS.FIND"></FormattedMessage>
                       </Button>
                     </Grid>

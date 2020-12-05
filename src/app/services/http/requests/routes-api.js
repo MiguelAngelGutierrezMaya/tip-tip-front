@@ -13,6 +13,7 @@ const backend_tip_top = () => {
                 materials: "/api/materials/",
                 lessons: "/api/lessons/",
                 units: "/api/units/",
+                countries: "/api/countries/",
                 cities: "/api/cities/",
                 roles: "/api/roles/",
                 documents: "/api/documents/",

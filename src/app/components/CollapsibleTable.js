@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
@@ -51,7 +50,6 @@ function Row({ row, id, onChildEdit }) {
                                         </IconButton>
                                     </TableCell>
                                 );
-                                break;
                             default:
                                 return (
                                     <TableCell component="th" scope="row" key={`collapsible-body-${id}-content-${j}`}>
@@ -84,9 +82,9 @@ export function CollapsibleTable({ className, data, onChildEdit, onChildCreate, 
      * @param {*} event 
      * @param {*} newPage 
      */
-    const handleChangePage = (event, newPage) => {
-        onChildPaginationClick(event, newPage);
-    };
+    // const handleChangePage = (event, newPage) => {
+    //     onChildPaginationClick(event, newPage);
+    // };
 
     /**
      * HandleEdit
@@ -98,16 +96,15 @@ export function CollapsibleTable({ className, data, onChildEdit, onChildCreate, 
      * HandleFile
      * @param {*} event 
      */
-    const handleFile = (event) => onChildFile(event);
+    // const handleFile = (event) => onChildFile(event);
 
     /**
      * HandleDelete
      * @param {*} event 
      */
-    const handleDelete = (event) => onChildDelete(event);
+    // const handleDelete = (event) => onChildDelete(event);
 
     return (
-
         <div className={`card card-custom ${className}`}>
             {
                 title ? (
@@ -119,7 +116,7 @@ export function CollapsibleTable({ className, data, onChildEdit, onChildCreate, 
                         <div className="card-toolbar">
                             {
                                 onChildCreate != null ?
-                                    <a href="#" className="btn btn-danger font-weight-bolder font-size-sm">Create</a> : (<></>)
+                                    <a href="/" className="btn btn-danger font-weight-bolder font-size-sm" onClick={(event) => { event.preventDefault(); }}>Create</a> : (<></>)
                             }
                         </div>
                     </div>

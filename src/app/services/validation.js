@@ -21,7 +21,7 @@ export default (obj) => {
                     }
                     break;
                 case (value.type[i] === 'email'):
-                    if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/.test(value.data))) {
+                    if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value.data))) {
                         new_object[key].error = true;
                         new_object[key].msj = language['GENERAL.FORM.ERROR.EMAIL']
                         i = value.type.length;
@@ -54,7 +54,7 @@ export default (obj) => {
                     break;
                 case (value.type[i].includes('confirmed:')):
                     const field = (value.type[i].split(":"))[1];
-                    if (value.data != new_object[field].data) {
+                    if (value.data !== new_object[field].data) {
                         new_object[key].error = true;
                         new_object[key].msj = (language['GENERAL.FORM.ERROR.CONFIRMED']).replace("{key}", key).replace("{field}", field);
                         i = value.type.length;
@@ -79,6 +79,8 @@ export default (obj) => {
                         new_object[key].msj = language['GENERAL.FORM.ERROR.STRONG_PASSWORD'];
                         i = value.type.length;
                     };
+                    break;
+                default:
                     break;
                 // case 'letters_numbers':
                 //     if (!(/^[a-z0-9\u00f1\u00d1]+$/i.test(obj[property].data)))

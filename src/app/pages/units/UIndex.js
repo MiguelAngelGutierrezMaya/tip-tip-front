@@ -54,10 +54,10 @@ export const UIndex = () => {
    * States
    */
   const [page, setPage] = useState(0);
-  const [total, setTotal] = useState(100);
+  const [total] = useState(100);
   const [value, setValue] = useState(false);
-  const [levels, SetLevels] = useState([{ id: 1, name: 'Topic words 1' }, { id: 2, name: 'Topic words 2' }, { id: 3, name: 'Topic words 3' }]);
-  const [units, setUnits] = useState({
+  const [levels] = useState([{ id: 1, name: 'Topic words 1' }, { id: 2, name: 'Topic words 2' }, { id: 3, name: 'Topic words 3' }]);
+  const [units] = useState({
 
     headers: [
       {

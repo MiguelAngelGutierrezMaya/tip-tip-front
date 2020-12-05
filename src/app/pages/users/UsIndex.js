@@ -93,7 +93,7 @@ export const UsIndex = () => {
   });
   const [filter, setFilter] = useState('first_name');
   const [filterText, setFilterText] = useState('');
-  const [genres, setGenres] = useState([
+  const [genres] = useState([
     {
       type: 'female',
       name: 'Niña'
@@ -106,6 +106,7 @@ export const UsIndex = () => {
   const [roles, setRoles] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [teachers, setTeachers] = useState([]);
+  const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
   const [users, setUsers] = useState({
     headers: [
@@ -136,6 +137,12 @@ export const UsIndex = () => {
    */
   const formInitData = {
     role: {
+      error: false,
+      msj: "",
+      data: null,
+      type: ['required']
+    },
+    country: {
       error: false,
       msj: "",
       data: null,
@@ -263,15 +270,15 @@ export const UsIndex = () => {
    */
   async function loadData() {
     const token = auth.getToken();
-    const response_cities = await backoffice_service().getCities({ token });
+    const response_countries = await backoffice_service().getCountries({ token });
     const response_roles = await backoffice_service().getRoles({ token });
     const response_documents = await backoffice_service().getDocuments({ token });
     const response_teachers = await backoffice_service().getUsers({ token }, { not_paginate: true, role_teacher: true });
-    if (response_cities.error) setSnackbar({ status: true, code: "error", message: response_cities.msj });
+    if (response_countries.error) setSnackbar({ status: true, code: "error", message: response_countries.msj });
     if (response_roles.error) setSnackbar({ status: true, code: "error", message: response_roles.msj });
     if (response_documents.error) setSnackbar({ status: true, code: "error", message: response_documents.msj });
     if (response_teachers.error) setSnackbar({ status: true, code: "error", message: response_teachers.msj });
-    setCities([...response_cities.data.data]);
+    setCountries([...response_countries.data.data]);
     setDocuments([...response_documents.data.data]);
     setRoles([...response_roles.data.data]);
     setTeachers([...response_teachers.data.data]);
@@ -336,7 +343,10 @@ export const UsIndex = () => {
     setUsers({ ...arr_users });
   };
 
-  const findUsersByFilter = () => handleChangePage(null, 0);
+  const findUsersByFilter = (event) => {
+    event.preventDefault();
+    return handleChangePage(null, 0);
+  }
   const handleChangeFilter = (event) => setFilter(event.target.value);
   const handleChangeFilterText = (event) => setFilterText(event.target.value);
 
@@ -349,6 +359,13 @@ export const UsIndex = () => {
     const form_data_obj = formDataStudent;
     form_data_obj[property].data = value;
     setFormDataStudent({ ...form_data_obj });
+  }
+  const handleChangeCountry = async (event, value) => {
+    const token = auth.getToken();
+    const response_cities = await backoffice_service().getCities({ token }, { country_id: value.id });
+    if (response_cities.error) setSnackbar({ status: true, code: "error", message: response_cities.msj });
+    setCities([...response_cities.data.data]);
+    handleChangeFormData('country', value);
   }
   const handleChangeCity = (event, value) => handleChangeFormData('city', value);
   const handleChangeDocument = (event, value) => handleChangeFormData('documentType', value);
@@ -472,7 +489,7 @@ export const UsIndex = () => {
           <div className={classes.root}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6} lg={6}>
-                <form noValidate autoComplete="off">
+                <form onSubmit={findUsersByFilter} noValidate autoComplete="off">
                   <Grid container spacing={3}>
                     <Grid item xs={12} sm={10} md={10} lg={10} className="pt-0 pb-0">
                       <FormControl component="fieldset" className="wd-full">
@@ -486,7 +503,7 @@ export const UsIndex = () => {
                       <TextField label={<FormattedMessage id="DASHBOARD.CONTENT.USERS.FIND.NAME.LABEL"></FormattedMessage>} variant="filled" value={filterText} className="wd-full search-text-field" size="small" onChange={handleChangeFilterText} />
                     </Grid>
                     <Grid item xs={6} sm={2} md={2} lg={2} className="pt-0">
-                      <Button variant="contained" color="secondary" size="large" className="btn-secondary btn-block h-40" onClick={findUsersByFilter}>
+                      <Button type={"submit"} variant="contained" color="secondary" size="large" className="btn-secondary btn-block h-40">
                         <FormattedMessage id="DASHBOARD.CONTENT.USERS.FIND.BUTTON"></FormattedMessage>
                       </Button>
                     </Grid>
@@ -557,6 +574,20 @@ export const UsIndex = () => {
                       {open.type_two ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse className="pl-5 pr-5" in={open.type_two} timeout="auto" unmountOnExit>
+                      <Grid item xs={12} sm={12} md={12} lg={12} className="pt-2 pb-2">
+                        <FormControl component="fieldset" className="wd-full">
+                          <FormLabel component="legend"><FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.COUNTRY"></FormattedMessage></FormLabel>
+                          <Autocomplete
+                            options={countries}
+                            getOptionLabel={(option) => option.name ? option.name : ""}
+                            value={formData.country.data}
+                            size={'small'}
+                            style={{ width: "100%" }}
+                            onChange={handleChangeCountry}
+                            renderInput={(params) => <TextField {...params} label={<FormattedMessage id="GENERAL.FORM.SELECT_OPTION"></FormattedMessage>} variant="outlined" style={{ height: "40px" }} error={formData.country.error} helperText={formData.country.msj} />}
+                          />
+                        </FormControl>
+                      </Grid>
                       <Grid item xs={12} sm={12} md={12} lg={12} className="pt-2 pb-2">
                         <FormControl component="fieldset" className="wd-full">
                           <FormLabel component="legend"><FormattedMessage id="DASHBOARD.CONTENT.USERS.COLLAPSE.FORM.SECOND_LEVEL.CITY"></FormattedMessage></FormLabel>

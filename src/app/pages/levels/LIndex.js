@@ -54,9 +54,9 @@ export const LIndex = () => {
    * States
    */
   const [page, setPage] = useState(0);
-  const [total, setTotal] = useState(100);
+  const [total] = useState(100);
   const [value, setValue] = useState(false);
-  const [levels, setLevels] = useState({
+  const [levels] = useState({
 
     headers: [
       {

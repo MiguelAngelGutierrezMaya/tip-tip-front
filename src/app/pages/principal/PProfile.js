@@ -29,7 +29,7 @@ import validator from './../../services/validation';
 export const PProfile = () => {
 
   const history = useHistory();
-  const permisision = auth.getPermission('Dashboard', 'Perfil');
+  const permisision = auth.getPermission('Dashboard', 'Perfil', false);
   if (!permisision) history.push(routes_api.frontend_tip_top().components.auth.home);
 
   /**

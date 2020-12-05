@@ -5,7 +5,6 @@ import { Link, Redirect } from "react-router-dom";
 import * as Yup from "yup";
 import { injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
-// import { requestPassword } from "../_redux/authCrud";
 
 const initialValues = {
   email: "",
@@ -42,6 +41,7 @@ function ForgotPassword(props) {
     initialValues,
     validationSchema: ForgotPasswordSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
+      setIsRequested(false);
       // requestPassword(values.email)
       //   .then(() => setIsRequested(true))
       //   .catch(() => {

@@ -3,7 +3,8 @@ const backend_tip_top = () => {
         gateway: {
             guest: {
                 login: "/api/login/",
-                forgot: "/api/forgot/"
+                forgot: "/api/forgot/",
+                forgotPassword: "/api/password-reset/"
             },
             auth: {
                 memos: "/api/memos/",

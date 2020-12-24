@@ -5,6 +5,8 @@
     "AUTH.GENERAL.FORGOT_BUTTON": "¿Olvidaste tu contraseña?",
     "AUTH.VALIDATION.INVALID_LOGIN": "Estas credenciales no coinciden con nuestros registros",
     "AUTH.GENERAL.SUBMIT": "Iniciar sesión",
+    "FORGOT_PASSWORD.GENERAL.SUBMIT": "Recuperar contraseña",
+    "FORGOT_PASSWORD.GENERAL.SUCCESS": "La contraseña se ha reestablecido, por favor accede a tu correo para validar los datos de acceso",
     "ERROR.FIRST_TEXT": "La página a la que intentas acceder",
     "ERROR.SECOND_TEXT": "no se encuentra disponible",
     "ERROR.BUTTON_BACK": "Regresar al inicio",

@@ -6,6 +6,10 @@ export function login(username, password) {
   return auth_service().login(username, password);
 }
 
+export function forgotPassword(email) {
+  return auth_service().forgotPassword(email);
+}
+
 export function getUserByToken() {
   const { user } = auth.getUserInfo();
   return { user: _serializeUser(model, user) }

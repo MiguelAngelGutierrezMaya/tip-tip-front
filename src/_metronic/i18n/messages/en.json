@@ -5,6 +5,8 @@
     "AUTH.GENERAL.FORGOT_BUTTON": "Forgot your password?",
     "AUTH.VALIDATION.INVALID_LOGIN": "These credentials do not match our records",
     "AUTH.GENERAL.SUBMIT": "Login",
+    "FORGOT_PASSWORD.GENERAL.SUBMIT": "Recover password",
+    "FORGOT_PASSWORD.GENERAL.SUCCESS": "The password has been reset, please access your email to validate the access data",
     "ERROR.FIRST_TEXT": "The page you are trying to access",
     "ERROR.SECOND_TEXT": "not available",
     "ERROR.BUTTON_BACK": "Return to start",

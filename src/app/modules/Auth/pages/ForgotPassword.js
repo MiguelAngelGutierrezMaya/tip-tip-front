@@ -3,8 +3,14 @@ import { useFormik } from "formik";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import * as Yup from "yup";
-import { injectIntl } from "react-intl";
+import { FormattedMessage, injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
+import { forgotPassword } from "../_redux/authCrud";
+
+import {
+  Snackbar
+} from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
 const initialValues = {
   email: "",
@@ -12,6 +18,12 @@ const initialValues = {
 
 function ForgotPassword(props) {
   const { intl } = props;
+  const [snackbar, setSnackbar] = useState({
+    status: false,
+    code: "",
+    message: ""
+  });
+  const [loading, setLoading] = useState(false);
   const [isRequested, setIsRequested] = useState(false);
   const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string()
@@ -20,10 +32,25 @@ function ForgotPassword(props) {
       .max(50, "Maximum 50 symbols")
       .required(
         intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
+          id: "GENERAL.FORM.ERROR.REQUIRED",
         })
       ),
   });
+
+  const enableLoading = () => {
+    setLoading(true);
+  };
+
+  const disableLoading = () => {
+    setLoading(false);
+  };
+
+  const handleCloseSnackbar = () =>
+    setSnackbar({
+      status: false,
+      snackbar: "",
+      message: ""
+    });
 
   const getInputClasses = (fieldname) => {
     if (formik.touched[fieldname] && formik.errors[fieldname]) {
@@ -41,24 +68,31 @@ function ForgotPassword(props) {
     initialValues,
     validationSchema: ForgotPasswordSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
+      enableLoading();
       setIsRequested(false);
-      // requestPassword(values.email)
-      //   .then(() => setIsRequested(true))
-      //   .catch(() => {
-      //     setIsRequested(false);
-      //     setSubmitting(false);
-      //     setStatus(
-      //       intl.formatMessage(
-      //         { id: "AUTH.VALIDATION.NOT_FOUND" },
-      //         { name: values.email }
-      //       )
-      //     );
-      //   });
+      setTimeout(async () => {
+
+        const { data, status, msj } = await forgotPassword(values.email);
+        disableLoading();
+        if (status === 200) {
+          setSnackbar({ status: true, code: "success", message: (<FormattedMessage id="FORGOT_PASSWORD.GENERAL.SUCCESS"></FormattedMessage>) })
+          setTimeout(() => setIsRequested(true), 3000);
+        } else {
+          setIsRequested(false);
+          setSubmitting(false);
+          setSnackbar({ status: true, code: "error", message: msj })
+        }
+      }, 1000);
     },
   });
 
   return (
     <>
+      <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={snackbar.status} autoHideDuration={10000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.code}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       {isRequested && <Redirect to="/auth" />}
       {!isRequested && (
         <div className="login-form login-forgot" style={{ display: "block" }}>
@@ -101,7 +135,8 @@ function ForgotPassword(props) {
                 className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
                 disabled={formik.isSubmitting}
               >
-                Submit
+                <span><FormattedMessage id="FORGOT_PASSWORD.GENERAL.SUBMIT" /></span>
+                {loading && <span className="ml-3 spinner spinner-white"></span>}
               </button>
               <Link to="/auth">
                 <button
@@ -109,7 +144,7 @@ function ForgotPassword(props) {
                   id="kt_login_forgot_cancel"
                   className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
                 >
-                  Cancel
+                  <FormattedMessage id="GENERAL.FORM.ACTIONS.CANCEL" />
                 </button>
               </Link>
             </div>

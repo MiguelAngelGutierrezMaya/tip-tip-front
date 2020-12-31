@@ -1,3 +1,4 @@
+import { forgotPassword } from '../../../../modules/Auth/_redux/authCrud';
 import axios from './../../axios/index'
 import format from "./../format-response.js"
 import routes_api from "./../routes-api.js"
@@ -14,6 +15,18 @@ export default {
         data.append('username', username);
         data.append('password', pwd);
         return await axios.post(routes_api.backend_tip_top().gateway.guest.login, data, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }).then(resp => {
+            return format.success(resp)
+        }).catch(error => {
+            return verifyError(error);
+        })
+    },
+    async forgotPassword(email) {
+        return await axios.post(routes_api.backend_tip_top().gateway.guest.forgotPassword, { email }, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'

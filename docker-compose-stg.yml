@@ -8,8 +8,8 @@ services:
     networks:
       - contenedores
     environment:
-      - "VIRTUAL_HOST=app.tiptopenglish.co"
-      - "LETSENCRYPT_HOST=app.tiptopenglish.co"
+      - "VIRTUAL_HOST=test.tiptopenglish.co"
+      - "LETSENCRYPT_HOST=test.tiptopenglish.co"
     expose:
       - 80
 

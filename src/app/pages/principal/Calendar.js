@@ -1279,6 +1279,15 @@ class Calendar extends React.PureComponent {
       delete formData['comments']
       delete formData['students']
       let error = false;
+
+      //Para los casos donde solo hay 1 estudiante en la clase
+      if(comments[1].data == null || comments[1].data == ""){
+        comments[1].data = {
+          id: null,
+          value: null
+        }
+      }
+
       formData = { ...validator(formData) };
       comments = comments.map(el => { return { ...(validator({ comment: el })).comment } });
       formData.comments = [...comments];
@@ -1324,6 +1333,15 @@ class Calendar extends React.PureComponent {
       delete formData['url'];
       delete formData['comments']
       let error = false;
+
+      //Para los casos donde solo hay 1 estudiante en la clase
+      if(comments[1].data == null || comments[1].data == ""){
+        comments[1].data = {
+          id: null,
+          value: null
+        }
+      }
+
       formData = { ...validator(formData) };
       comments = comments.map(el => { return { ...(validator({ comment: el })).comment } });
       formData.comments = [...comments];
@@ -2616,8 +2634,8 @@ class Calendar extends React.PureComponent {
                   <GroupingState grouping={grouping} />
 
                   <WeekView
-                    startDayHour={0}
-                    endDayHour={24}
+                    startDayHour={8}
+                    endDayHour={19}
                     excludedDays={[]}
                     name="Semana"
                     timeTableCellComponent={WeekViewTimeTableCell}

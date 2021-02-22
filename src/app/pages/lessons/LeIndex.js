@@ -661,7 +661,7 @@ export const LeIndex = () => {
                       <FormLabel component="legend"><FormattedMessage id="DASHBOARD.CONTENT.LESSONS.FORM.SELECT.LABEL"></FormattedMessage></FormLabel>
                       <Autocomplete
                         options={units}
-                        getOptionLabel={(option) => option.name ? option.name : ""}
+                        getOptionLabel={(option) => option.name ? option.name + " - " + option.level.name : ""}
                         value={formData.unit.data}
                         className="mt-2"
                         size={'small'}

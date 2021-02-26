@@ -1943,35 +1943,49 @@ class Calendar extends React.PureComponent {
                           aria-labelledby="nested-list-subheader"
                           className={classes.list_collapse}
                         >
-                          <ListItem button onClick={this.handleClickCollapse}>
-                            <ListItemText
-                              primary={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.SHOW.MATERIALS.TITLE"></FormattedMessage>}
-                              type={"one"}
-                            />
-                            {collapse.type_one ? (
-                              <ExpandLess />
-                            ) : (
-                                <ExpandMore />
-                              )}
-                          </ListItem>
-                          <Collapse
-                            className="pl-5 pr-5"
-                            in={collapse.type_one}
-                            timeout="auto"
-                            unmountOnExit
-                          >
-                            <Grid container>
-                              <Grid
-                                item
-                                xs={12}
-                                sm={12}
-                                md={12}
-                                lg={12}
-                              >
-                                <Table numRows={materials.body.length} title={''} subtitle={''} className="card-stretch gutter-b" data={materials} current_page={0} total={materials.body.length} onChildEdit={null} onChildFile={null} onChildCreate={null} onChildPaginationClick={null}></Table>
-                              </Grid>
-                            </Grid>
-                          </Collapse>
+                          {
+                            roles[auth.getUserInfo().user.role.name] === roles.ROLE_ADMIN ||
+                            (tooltipClassData != null && tooltipClassData.endDate >= moment().tz("America/Bogota").toDate()) ?
+                              (
+                                  <>
+                                    <ListItem button onClick={this.handleClickCollapse}>
+                                      <ListItemText
+                                          primary={<FormattedMessage
+                                              id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.SHOW.MATERIALS.TITLE"></FormattedMessage>}
+                                          type={"one"}
+                                      />
+                                      {collapse.type_one ? (
+                                          <ExpandLess/>
+                                      ) : (
+                                          <ExpandMore/>
+                                      )}
+                                    </ListItem>
+                                    <Collapse
+                                        className="pl-5 pr-5"
+                                        in={collapse.type_one}
+                                        timeout="auto"
+                                        unmountOnExit
+                                    >
+                                      <Grid container>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={12}
+                                            md={12}
+                                            lg={12}
+                                        >
+                                          <Table numRows={materials.body.length} title={''} subtitle={''}
+                                                 className="card-stretch gutter-b" data={materials} current_page={0}
+                                                 total={materials.body.length} onChildEdit={null} onChildFile={null}
+                                                 onChildCreate={null} onChildPaginationClick={null}></Table>
+                                        </Grid>
+                                      </Grid>
+                                    </Collapse>
+                                  </>
+                              )
+                                :
+                              (<></>)
+                          }
                           <ListItem
                             button
                             onClick={this.handleClickCollapse}

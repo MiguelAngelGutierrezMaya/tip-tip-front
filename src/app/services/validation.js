@@ -38,7 +38,7 @@ export default (obj) => {
                     break;
                 case (value.type[i].includes('min:')):
                     const min = parseInt((value.type[i].split(":"))[1]);
-                    if (value.data.length < min) {
+                    if (value.data.length > 0 && value.data.length < min) {
                         new_object[key].error = true;
                         new_object[key].msj = (language['GENERAL.FORM.ERROR.MIN']).replace("{min}", min);
                         i = value.type.length;
@@ -74,7 +74,7 @@ export default (obj) => {
                     break;
                 case (value.type[i] === 'strong_password'):
                     var decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
-                    if (!value.data.match(decimal)) {
+                    if (value.data.length > 0 && !value.data.match(decimal)) {
                         new_object[key].error = true;
                         new_object[key].msj = language['GENERAL.FORM.ERROR.STRONG_PASSWORD'];
                         i = value.type.length;

@@ -9,6 +9,7 @@ const backend_tip_top = () => {
             auth: {
                 memos: "/api/memos/",
                 students: "/api/students/",
+                parents: "/api/parents/",
                 student_classes: "/api/student-classes/",
                 classes: "/api/classes/",
                 materials: "/api/materials/",

@@ -57,6 +57,23 @@ export default {
             return verifyError(error);
         })
     },
+    async getParents({ token, page }, data = {}) {
+        return await axios.get(routes_api.backend_tip_top().gateway.auth.parents, {
+            params: {
+                page: (page + 1),
+                ...data
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        }).then(resp => {
+            return format.success(resp);
+        }).catch(error => {
+            return verifyError(error);
+        })
+    },
     async cancelClass({ token, data }) {
         return await axios.patch(routes_api.backend_tip_top().gateway.auth.classes, data, {
             headers: {
@@ -327,6 +344,19 @@ export default {
     },
     async createUser({ data, token }) {
         return await axios.post(routes_api.backend_tip_top().gateway.auth.users, data, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        }).then(resp => {
+            return format.success(resp)
+        }).catch(error => {
+            return verifyError(error);
+        })
+    },
+    async editFullUser({ data, token }) {
+        return await axios.put(routes_api.backend_tip_top().gateway.auth.users, data, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',

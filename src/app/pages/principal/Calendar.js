@@ -179,6 +179,16 @@ const formInitData = {
   ]
 };
 
+const daysInitData = {
+  monday: false,
+  tuesday: false,
+  wednesday: false,
+  thursday: false,
+  friday: false,
+  saturday: false,
+  sunday: false,
+}
+
 const priorities = [
   { id: 1, text: language['DASHBOARD.CONTENT.CALENDAR.TITLE'], color: blue },
   // { id: 2, text: 'Disponibilidad semanal', color: deepOrange }
@@ -601,6 +611,105 @@ const TooltipContent = ({
                   .format("YYYY-MM-DD h:mm A")}
               </span>
             </Grid>
+            {
+              appointmentData.class_repetition != null ?
+                  (
+                      <>
+                        <Grid
+                          className={classNames(
+                              classes.contentItemIcon,
+                              classes.icon,
+                              classes.colorfulContent
+                          )}
+                          item
+                          xs={2}
+                        >
+                          Rep
+                        </Grid>
+                        <Grid item xs={10}>
+                          {
+                              appointmentData.class_repetition.days[0] ?
+                                  (
+                                      <span className={classNames(classes.colorfulContent)}>
+                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.MONDAY"></FormattedMessage>
+                                        <i className="mx-2">|</i>
+                                      </span>
+                                  )
+                                  :
+                                  (<></>)
+                            }
+                            {
+                              appointmentData.class_repetition.days[1] ?
+                                  (
+                                      <span className={classNames(classes.colorfulContent)}>
+                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.TUESDAY"></FormattedMessage>
+                                        <i className="mx-2">|</i>
+                                      </span>
+                                  )
+                                  :
+                                  (<></>)
+                            }
+                            {
+                              appointmentData.class_repetition.days[2] ?
+                                  (
+                                      <span className={classNames(classes.colorfulContent)}>
+                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.WEDNESDAY"></FormattedMessage>
+                                        <i className="mx-2">|</i>
+                                      </span>
+                                  )
+                                  :
+                                  (<></>)
+                            }
+                            {
+                              appointmentData.class_repetition.days[3] ?
+                                  (
+                                      <span className={classNames(classes.colorfulContent)}>
+                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.THURSDAY"></FormattedMessage>
+                                        <i className="mx-2">|</i>
+                                      </span>
+                                  )
+                                  :
+                                  (<></>)
+                            }
+                            {
+                              appointmentData.class_repetition.days[4] ?
+                                  (
+                                      <span className={classNames(classes.colorfulContent)}>
+                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.FRIDAY"></FormattedMessage>
+                                        <i className="mx-2">|</i>
+                                      </span>
+                                  )
+                                  :
+                                  (<></>)
+                            }
+                            {
+                              appointmentData.class_repetition.days[5] ?
+                                  (
+                                      <span className={classNames(classes.colorfulContent)}>
+                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SATURDAY"></FormattedMessage>
+                                        <i className="mx-2">|</i>
+                                      </span>
+                                  )
+                                  :
+                                  (<></>)
+                            }
+                            {
+                              appointmentData.class_repetition.days[6] ?
+                                  (
+                                      <span className={classNames(classes.colorfulContent)}>
+                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SUNDAY"></FormattedMessage>
+                                        <i className="mx-2">|</i>
+                                      </span>
+                                  )
+                                  :
+                                  (<></>)
+                            }
+                        </Grid>
+                      </>
+                  )
+                  :
+                  (<></>)
+            }
           </>
         ) : (
             <></>
@@ -733,7 +842,9 @@ class Calendar extends React.PureComponent {
       openModal: false,
       openConfirm: false,
       byStudent: true,
+      onlyOneClass: true,
       formData: { ...formInitData },
+      daysData: { ...daysInitData },
       memos: {
         headers: [
           {
@@ -799,6 +910,7 @@ class Calendar extends React.PureComponent {
           else formInitData[key].data = null;
       });
       this.setState({ formData: { ...formInitData } });
+      this.setState({ daysData: { ...daysInitData } });
     }
     this.currentViewNameChange = (currentViewName) => {
       this.setState({ currentViewName });
@@ -818,8 +930,16 @@ class Calendar extends React.PureComponent {
 
       this.setState({ currentPriority: value, resources: nextResources });
     }
+    this.getDaysData = () => {
+      return { ...this.state.daysData };
+    }
     this.getFormData = () => {
       return { ...this.state.formData };
+    }
+    this.handleChangeDaysData = (event) => {
+      const form_data_obj = this.getDaysData();
+      if (form_data_obj[event.target.value] != undefined) form_data_obj[event.target.value] = event.target.checked;
+      this.setState({ daysData: { ...form_data_obj } });
     }
     this.handleChangeFormData = (property, value) => {
       const form_data_obj = this.getFormData();
@@ -850,6 +970,9 @@ class Calendar extends React.PureComponent {
       const end = timezone.add(25, 'minutes').format("YYYY-MM-DDTHH:mm");
       if (setEndToo)
         this.handleChangeEnd({ target: { value: end } }, false);
+      const initData = {...this.getDaysData()};
+      let day = moment(event.target.value).tz("America/Bogota").isoWeekday();
+      this.checkInitDay(initData, day);
     }
     this.handleChangeEnd = (event) =>
       this.handleChangeFormData("end", event.target.value);
@@ -988,6 +1111,45 @@ class Calendar extends React.PureComponent {
     }
     this.handleChangeTypeProgrammingStudent = (event) => this.handleChangeTypeProgramming(true);
     this.handleChangeTypeProgrammingLesson = (event) => this.handleChangeTypeProgramming(false);
+
+    this.checkInitDay = (daysData, day) => {
+        switch (day){
+          case 1:
+            daysData.monday = true;
+            break;
+          case 2:
+            daysData.tuesday = true;
+            break;
+          case 3:
+            daysData.wednesday = true;
+            break;
+          case 4:
+            daysData.thursday = true;
+            break;
+          case 5:
+            daysData.friday = true;
+            break;
+          case 6:
+            daysData.saturday = true;
+            break;
+          case 7:
+            daysData.sunday = true;
+            break;
+          default:
+            break;
+        }
+        this.setState({ daysData: { ...daysData } });
+    }
+
+    this.handleChangeOnlyOneClass = value => event => {
+      if(value === false){
+        const initData = JSON.parse(JSON.stringify(daysInitData));
+        const formData = this.getFormData();
+        let day = moment(formData.init.data).tz("America/Bogota").isoWeekday();
+        this.checkInitDay(initData, day);
+      }
+      this.setState({ onlyOneClass: value });
+    }
 
     this.handleOpenModal = () => this.setState({ openModal: true });
     this.handleCloseModal = () => {
@@ -1188,11 +1350,12 @@ class Calendar extends React.PureComponent {
     this.handleSaveClass = async (event) => {
       event.preventDefault();
       const token = auth.getToken();
-      const { formData } = this.state;
+      const { formData, daysData } = this.state;
       delete formData['sentences_learned'];
       delete formData['vocabulary_learned'];
       delete formData['type'];
       delete formData['comments'];
+      let daysDataArray = Object.values(daysData);
       let error = false;
       this.setState({ formData: { ...validator(formData) } });
       Object.entries(this.state.formData).forEach(([key, value]) => {
@@ -1215,6 +1378,7 @@ class Calendar extends React.PureComponent {
           end: formData.end.data.replace("T", " "),
           url: formData.url.data,
           students: formData.students.data,
+          days: daysDataArray,
         },
       });
       if (response.error)
@@ -1517,6 +1681,7 @@ class Calendar extends React.PureComponent {
             students: el.students,
             teacher: el.user,
             id: el.id,
+            class_repetition: el.class_repetition,
           };
         }),
       ],
@@ -1609,10 +1774,12 @@ class Calendar extends React.PureComponent {
       lessonByStudent,
       teachers,
       byStudent,
+      onlyOneClass,
       students,
       allStudents,
       collapse,
       formData,
+      daysData,
       materials,
       memos
     } = this.state;
@@ -1749,6 +1916,83 @@ class Calendar extends React.PureComponent {
                                 />
                               </FormControl>
                             </Grid>
+                            <Grid item xs={12} sm={12} md={12} lg={12}>
+                              <FormGroup row className="ml-3">
+                                <FormControlLabel
+                                  control={<Checkbox checked={onlyOneClass} onChange={this.handleChangeOnlyOneClass(true)} />}
+                                  label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.SINGLE_CLASS"></FormattedMessage>}
+                                />
+                                <FormControlLabel
+                                  control={<Checkbox checked={!onlyOneClass} onChange={this.handleChangeOnlyOneClass(false)} />}
+                                  label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.REPEAT_CLASS"></FormattedMessage>}
+                                />
+                              </FormGroup>
+                            </Grid>
+                            {
+                              !onlyOneClass?
+                                  (
+                                      <Grid item xs={12} sm={12} md={12} lg={12} className="mb-4">
+                                        <FormControl component="fieldset">
+                                          <FormLabel component="legend">
+                                            <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.REPEATING_DAYS"></FormattedMessage>
+                                          </FormLabel>
+                                          <FormGroup aria-label="position" name="position" row>
+                                            <FormControlLabel
+                                                control={<Checkbox checked={daysData.monday}
+                                                                   onChange={this.handleChangeDaysData}
+                                                                   value="monday"/>}
+                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.MONDAY"></FormattedMessage>}
+                                                labelPlacement="top"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox checked={daysData.tuesday}
+                                                                   onChange={this.handleChangeDaysData}
+                                                                   value="tuesday"/>}
+                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.TUESDAY"></FormattedMessage>}
+                                                labelPlacement="top"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox checked={daysData.wednesday}
+                                                                   onChange={this.handleChangeDaysData}
+                                                                   value="wednesday"/>}
+                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.WEDNESDAY"></FormattedMessage>}
+                                                labelPlacement="top"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox checked={daysData.thursday}
+                                                                   onChange={this.handleChangeDaysData}
+                                                                   value="thursday"/>}
+                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.THURSDAY"></FormattedMessage>}
+                                                labelPlacement="top"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox checked={daysData.friday}
+                                                                   onChange={this.handleChangeDaysData}
+                                                                   value="friday"/>}
+                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.FRIDAY"></FormattedMessage>}
+                                                labelPlacement="top"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox checked={daysData.saturday}
+                                                                   onChange={this.handleChangeDaysData}
+                                                                   value="saturday"/>}
+                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SATURDAY"></FormattedMessage>}
+                                                labelPlacement="top"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox checked={daysData.sunday}
+                                                                   onChange={this.handleChangeDaysData}
+                                                                   value="sunday"/>}
+                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SUNDAY"></FormattedMessage>}
+                                                labelPlacement="top"
+                                            />
+                                          </FormGroup>
+                                        </FormControl>
+                                      </Grid>
+                                  )
+                                  :
+                                  (<></>)
+                            }
                             <Grid
                               item
                               xs={12}

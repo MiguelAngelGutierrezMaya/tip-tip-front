@@ -113,6 +113,19 @@ export default {
             return verifyError(error);
         })
     },
+    async editClassTime({ token, data }) {
+        return await axios.patch(routes_api.backend_tip_top().gateway.auth.classes, data, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        }).then(resp => {
+            return format.success(resp)
+        }).catch(error => {
+            return verifyError(error);
+        })
+    },
     async getClasses({ token, init, end }, data = {}) {
         return await axios.get(routes_api.backend_tip_top().gateway.auth.student_classes, {
             params: {

@@ -467,8 +467,8 @@ const Appointment = ({ children, ...restProps }) => {
               </>
             ))
           ) : (
-              <span><FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.CANCELED"></FormattedMessage></span>
-            )}
+            <span><FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.CANCELED"></FormattedMessage></span>
+          )}
         </Grid>
         <Grid item xs={12} sm={6} md={6} lg={6} className={"text-right"} style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
           {props.data.state ? (
@@ -480,8 +480,8 @@ const Appointment = ({ children, ...restProps }) => {
               ></i>
             ))
           ) : (
-              <></>
-            )}
+            <></>
+          )}
         </Grid>
       </Grid>
     </Appointments.Appointment >
@@ -567,8 +567,8 @@ const TooltipContent = ({
             </Grid>
           </>
         ) : (
-            <></>
-          )}
+          <></>
+        )}
       </Grid>
       <Grid container alignItems="center">
         {appointmentData.state ? (
@@ -613,134 +613,134 @@ const TooltipContent = ({
             </Grid>
             {
               appointmentData.class_repetition != null ?
-                  (
-                      <>
-                        <Grid
-                          className={classNames(
-                              classes.contentItemIcon,
-                              classes.icon,
-                              classes.colorfulContent
-                          )}
-                          item
-                          xs={2}
-                        >
-                          Rep
+                (
+                  <>
+                    <Grid
+                      className={classNames(
+                        classes.contentItemIcon,
+                        classes.icon,
+                        classes.colorfulContent
+                      )}
+                      item
+                      xs={2}
+                    >
+                      Rep
                         </Grid>
-                        <Grid item xs={10}>
-                          {
-                              appointmentData.class_repetition.days[0] ?
-                                  (
-                                      <span className={classNames(classes.colorfulContent)}>
-                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.MONDAY"></FormattedMessage>
-                                        <i className="mx-2">|</i>
-                                      </span>
-                                  )
-                                  :
-                                  (<></>)
-                            }
-                            {
-                              appointmentData.class_repetition.days[1] ?
-                                  (
-                                      <span className={classNames(classes.colorfulContent)}>
-                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.TUESDAY"></FormattedMessage>
-                                        <i className="mx-2">|</i>
-                                      </span>
-                                  )
-                                  :
-                                  (<></>)
-                            }
-                            {
-                              appointmentData.class_repetition.days[2] ?
-                                  (
-                                      <span className={classNames(classes.colorfulContent)}>
-                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.WEDNESDAY"></FormattedMessage>
-                                        <i className="mx-2">|</i>
-                                      </span>
-                                  )
-                                  :
-                                  (<></>)
-                            }
-                            {
-                              appointmentData.class_repetition.days[3] ?
-                                  (
-                                      <span className={classNames(classes.colorfulContent)}>
-                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.THURSDAY"></FormattedMessage>
-                                        <i className="mx-2">|</i>
-                                      </span>
-                                  )
-                                  :
-                                  (<></>)
-                            }
-                            {
-                              appointmentData.class_repetition.days[4] ?
-                                  (
-                                      <span className={classNames(classes.colorfulContent)}>
-                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.FRIDAY"></FormattedMessage>
-                                        <i className="mx-2">|</i>
-                                      </span>
-                                  )
-                                  :
-                                  (<></>)
-                            }
-                            {
-                              appointmentData.class_repetition.days[5] ?
-                                  (
-                                      <span className={classNames(classes.colorfulContent)}>
-                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SATURDAY"></FormattedMessage>
-                                        <i className="mx-2">|</i>
-                                      </span>
-                                  )
-                                  :
-                                  (<></>)
-                            }
-                            {
-                              appointmentData.class_repetition.days[6] ?
-                                  (
-                                      <span className={classNames(classes.colorfulContent)}>
-                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SUNDAY"></FormattedMessage>
-                                        <i className="mx-2">|</i>
-                                      </span>
-                                  )
-                                  :
-                                  (<></>)
-                            }
-                        </Grid>
-                      </>
-                  )
-                  :
-                  (<></>)
+                    <Grid item xs={10}>
+                      {
+                        appointmentData.class_repetition.days[0] ?
+                          (
+                            <span className={classNames(classes.colorfulContent)}>
+                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.MONDAY"></FormattedMessage>
+                              <i className="mx-2">|</i>
+                            </span>
+                          )
+                          :
+                          (<></>)
+                      }
+                      {
+                        appointmentData.class_repetition.days[1] ?
+                          (
+                            <span className={classNames(classes.colorfulContent)}>
+                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.TUESDAY"></FormattedMessage>
+                              <i className="mx-2">|</i>
+                            </span>
+                          )
+                          :
+                          (<></>)
+                      }
+                      {
+                        appointmentData.class_repetition.days[2] ?
+                          (
+                            <span className={classNames(classes.colorfulContent)}>
+                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.WEDNESDAY"></FormattedMessage>
+                              <i className="mx-2">|</i>
+                            </span>
+                          )
+                          :
+                          (<></>)
+                      }
+                      {
+                        appointmentData.class_repetition.days[3] ?
+                          (
+                            <span className={classNames(classes.colorfulContent)}>
+                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.THURSDAY"></FormattedMessage>
+                              <i className="mx-2">|</i>
+                            </span>
+                          )
+                          :
+                          (<></>)
+                      }
+                      {
+                        appointmentData.class_repetition.days[4] ?
+                          (
+                            <span className={classNames(classes.colorfulContent)}>
+                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.FRIDAY"></FormattedMessage>
+                              <i className="mx-2">|</i>
+                            </span>
+                          )
+                          :
+                          (<></>)
+                      }
+                      {
+                        appointmentData.class_repetition.days[5] ?
+                          (
+                            <span className={classNames(classes.colorfulContent)}>
+                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SATURDAY"></FormattedMessage>
+                              <i className="mx-2">|</i>
+                            </span>
+                          )
+                          :
+                          (<></>)
+                      }
+                      {
+                        appointmentData.class_repetition.days[6] ?
+                          (
+                            <span className={classNames(classes.colorfulContent)}>
+                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SUNDAY"></FormattedMessage>
+                              <i className="mx-2">|</i>
+                            </span>
+                          )
+                          :
+                          (<></>)
+                      }
+                    </Grid>
+                  </>
+                )
+                :
+                (<></>)
             }
           </>
         ) : (
-            <></>
-          )}
+          <></>
+        )}
       </Grid>
       <Grid container alignItems="center" className={"mt-2"}>
         {
           roles[auth.getUserInfo().user.role.name] === roles.ROLE_ADMIN ||
             roles[auth.getUserInfo().user.role.name] === roles.ROLE_USER ? (
-              <Grid
-                item
-                xs={12}
-              >
-                <Grid container alignItems="center">
-                  <Grid
-                    className={classNames(
-                      classes.contentItemIcon,
-                      classes.icon,
-                      classes.colorfulContent
-                    )}
-                    item
-                    xs={2}
-                  >
-                    <span>Pr</span>
-                  </Grid>
-                  <Grid item xs={10}>
-                    <span>{appointmentData.teacher.first_name} {appointmentData.teacher.last_name}</span>
-                  </Grid>
+            <Grid
+              item
+              xs={12}
+            >
+              <Grid container alignItems="center">
+                <Grid
+                  className={classNames(
+                    classes.contentItemIcon,
+                    classes.icon,
+                    classes.colorfulContent
+                  )}
+                  item
+                  xs={2}
+                >
+                  <span>Pr</span>
+                </Grid>
+                <Grid item xs={10}>
+                  <span>{appointmentData.teacher.first_name} {appointmentData.teacher.last_name}</span>
                 </Grid>
               </Grid>
-            ) : (<></>)
+            </Grid>
+          ) : (<></>)
         }
         {appointmentData.students.map((el, index) => (
           <Grid
@@ -801,21 +801,21 @@ const Header = withStyles(styles, { name: "Header" })(
         appointmentData.state ? (
           roles[auth.getUserInfo().user.role.name] === roles.ROLE_ADMIN ||
             roles[auth.getUserInfo().user.role.name] === roles.ROLE_TEACHER ? (
-              <IconButton
-                onClick={() => {
-                  tooltipClassData = appointmentData;
-                  document.getElementById("button-edit-class").click();
-                }}
-                className={classes.commandButton}
-              >
-                <i className="flaticon-edit"></i>
-              </IconButton>
-            ) : (
-              <></>
-            )
-        ) : (
+            <IconButton
+              onClick={() => {
+                tooltipClassData = appointmentData;
+                document.getElementById("button-edit-class").click();
+              }}
+              className={classes.commandButton}
+            >
+              <i className="flaticon-edit"></i>
+            </IconButton>
+          ) : (
             <></>
           )
+        ) : (
+          <></>
+        )
       }
     </AppointmentTooltip.Header>
   )
@@ -876,6 +876,7 @@ class Calendar extends React.PureComponent {
       collapse: {
         type_one: false,
         type_two: false,
+        type_three: false,
       },
       snackbar: {
         status: false,
@@ -970,7 +971,7 @@ class Calendar extends React.PureComponent {
       const end = timezone.add(25, 'minutes').format("YYYY-MM-DDTHH:mm");
       if (setEndToo)
         this.handleChangeEnd({ target: { value: end } }, false);
-      const initData = {...this.getDaysData()};
+      const initData = { ...this.getDaysData() };
       let day = moment(event.target.value).tz("America/Bogota").isoWeekday();
       this.checkInitDay(initData, day);
     }
@@ -1077,8 +1078,9 @@ class Calendar extends React.PureComponent {
         });
       }
       this.handleCloseModal();
-      document
-        .getElementsByClassName("MuiButtonBase-root MuiIconButton-root")[4]
+      const array_elements = document
+        .getElementsByClassName("MuiButtonBase-root MuiIconButton-root");
+      array_elements[array_elements.length - 1]
         .click();
       this.setState({
         snackbar: {
@@ -1100,6 +1102,10 @@ class Calendar extends React.PureComponent {
             event.currentTarget.firstChild.getAttribute("type") === "two"
               ? !this.state.collapse.type_two
               : false,
+          type_three:
+            event.currentTarget.firstChild.getAttribute("type") === "three"
+              ? !this.state.collapse.type_three
+              : false,
         },
       });
 
@@ -1113,36 +1119,36 @@ class Calendar extends React.PureComponent {
     this.handleChangeTypeProgrammingLesson = (event) => this.handleChangeTypeProgramming(false);
 
     this.checkInitDay = (daysData, day) => {
-        switch (day){
-          case 1:
-            daysData.monday = true;
-            break;
-          case 2:
-            daysData.tuesday = true;
-            break;
-          case 3:
-            daysData.wednesday = true;
-            break;
-          case 4:
-            daysData.thursday = true;
-            break;
-          case 5:
-            daysData.friday = true;
-            break;
-          case 6:
-            daysData.saturday = true;
-            break;
-          case 7:
-            daysData.sunday = true;
-            break;
-          default:
-            break;
-        }
-        this.setState({ daysData: { ...daysData } });
+      switch (day) {
+        case 1:
+          daysData.monday = true;
+          break;
+        case 2:
+          daysData.tuesday = true;
+          break;
+        case 3:
+          daysData.wednesday = true;
+          break;
+        case 4:
+          daysData.thursday = true;
+          break;
+        case 5:
+          daysData.friday = true;
+          break;
+        case 6:
+          daysData.saturday = true;
+          break;
+        case 7:
+          daysData.sunday = true;
+          break;
+        default:
+          break;
+      }
+      this.setState({ daysData: { ...daysData } });
     }
 
     this.handleChangeOnlyOneClass = value => event => {
-      if(value === false){
+      if (value === false) {
         const initData = JSON.parse(JSON.stringify(daysInitData));
         const formData = this.getFormData();
         let day = moment(formData.init.data).tz("America/Bogota").isoWeekday();
@@ -1378,7 +1384,7 @@ class Calendar extends React.PureComponent {
           end: formData.end.data.replace("T", " "),
           url: formData.url.data,
           students: formData.students.data,
-          days: daysDataArray,
+          days: !this.state.onlyOneClass ? daysDataArray : [],
         },
       });
       if (response.error)
@@ -1397,6 +1403,68 @@ class Calendar extends React.PureComponent {
       this.handleCloseModal();
       await this.loadData();
       await this.loadAllStudents();
+      return await this.getClasses();
+    }
+    this.handleEditHoursClass = async (event) => {
+      event.preventDefault();
+      const token = auth.getToken();
+      const { formData } = this.state;
+      delete formData['id'];
+      delete formData['lesson'];
+      delete formData['teacher'];
+      delete formData['url'];
+      delete formData['students'];
+      delete formData['sentences_learned'];
+      delete formData['vocabulary_learned'];
+      delete formData['type'];
+      delete formData['comments'];
+      let error = false;
+      this.setState({ formData: { ...validator(formData) } });
+      Object.entries(this.state.formData).forEach(([key, value]) => {
+        if (value.error) error = true;
+      });
+      if (error)
+        return this.setState({
+          snackbar: {
+            status: true,
+            code: "error",
+            message: <FormattedMessage id="GENERAL.FORM.ERROR.ERRORS.TEXT"></FormattedMessage>,
+          },
+        });
+      const response = await backoffice_service().editClassTime({
+        token,
+        data: {
+          id: tooltipClassData.id,
+          init: formData.init.data.replace("T", " "),
+          end: formData.end.data.replace("T", " "),
+          modify_hours: true
+        },
+      });
+      if (response.error)
+        return this.setState({
+          snackbar: { status: true, code: "error", message: response.msj },
+        });
+      this.setState({
+        byStudent: true,
+        snackbar: {
+          status: true,
+          code: "success",
+          message: (<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.MESSAGES.SUCCESS"></FormattedMessage>),
+        },
+      });
+      this.initData();
+      this.handleCloseModal();
+      const array_elements = document
+        .getElementsByClassName("MuiButtonBase-root MuiIconButton-root");
+      array_elements[array_elements.length - 1]
+        .click();
+      this.setState({
+        snackbar: {
+          status: true,
+          code: "success",
+          message: (<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.EDIT.HOUR.MESSAGE"></FormattedMessage>),
+        },
+      });
       return await this.getClasses();
     }
     this.saveOrEditMemo = async (token, data, i18n, type) => {
@@ -1445,7 +1513,7 @@ class Calendar extends React.PureComponent {
       let error = false;
 
       //Para los casos donde solo hay 1 estudiante en la clase
-      if(comments[1].data == null || comments[1].data == ""){
+      if (comments[1].data == null || comments[1].data == "") {
         comments[1].data = {
           id: null,
           value: null
@@ -1499,7 +1567,7 @@ class Calendar extends React.PureComponent {
       let error = false;
 
       //Para los casos donde solo hay 1 estudiante en la clase
-      if(comments[1].data == null || comments[1].data == ""){
+      if (comments[1].data == null || comments[1].data == "") {
         comments[1].data = {
           id: null,
           value: null
@@ -1929,69 +1997,69 @@ class Calendar extends React.PureComponent {
                               </FormGroup>
                             </Grid>
                             {
-                              !onlyOneClass?
-                                  (
-                                      <Grid item xs={12} sm={12} md={12} lg={12} className="mb-4">
-                                        <FormControl component="fieldset">
-                                          <FormLabel component="legend">
-                                            <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.REPEATING_DAYS"></FormattedMessage>
-                                          </FormLabel>
-                                          <FormGroup aria-label="position" name="position" row>
-                                            <FormControlLabel
-                                                control={<Checkbox checked={daysData.monday}
-                                                                   onChange={this.handleChangeDaysData}
-                                                                   value="monday"/>}
-                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.MONDAY"></FormattedMessage>}
-                                                labelPlacement="top"
-                                            />
-                                            <FormControlLabel
-                                                control={<Checkbox checked={daysData.tuesday}
-                                                                   onChange={this.handleChangeDaysData}
-                                                                   value="tuesday"/>}
-                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.TUESDAY"></FormattedMessage>}
-                                                labelPlacement="top"
-                                            />
-                                            <FormControlLabel
-                                                control={<Checkbox checked={daysData.wednesday}
-                                                                   onChange={this.handleChangeDaysData}
-                                                                   value="wednesday"/>}
-                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.WEDNESDAY"></FormattedMessage>}
-                                                labelPlacement="top"
-                                            />
-                                            <FormControlLabel
-                                                control={<Checkbox checked={daysData.thursday}
-                                                                   onChange={this.handleChangeDaysData}
-                                                                   value="thursday"/>}
-                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.THURSDAY"></FormattedMessage>}
-                                                labelPlacement="top"
-                                            />
-                                            <FormControlLabel
-                                                control={<Checkbox checked={daysData.friday}
-                                                                   onChange={this.handleChangeDaysData}
-                                                                   value="friday"/>}
-                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.FRIDAY"></FormattedMessage>}
-                                                labelPlacement="top"
-                                            />
-                                            <FormControlLabel
-                                                control={<Checkbox checked={daysData.saturday}
-                                                                   onChange={this.handleChangeDaysData}
-                                                                   value="saturday"/>}
-                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SATURDAY"></FormattedMessage>}
-                                                labelPlacement="top"
-                                            />
-                                            <FormControlLabel
-                                                control={<Checkbox checked={daysData.sunday}
-                                                                   onChange={this.handleChangeDaysData}
-                                                                   value="sunday"/>}
-                                                label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SUNDAY"></FormattedMessage>}
-                                                labelPlacement="top"
-                                            />
-                                          </FormGroup>
-                                        </FormControl>
-                                      </Grid>
-                                  )
-                                  :
-                                  (<></>)
+                              !onlyOneClass ?
+                                (
+                                  <Grid item xs={12} sm={12} md={12} lg={12} className="mb-4">
+                                    <FormControl component="fieldset">
+                                      <FormLabel component="legend">
+                                        <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.REPEATING_DAYS"></FormattedMessage>
+                                      </FormLabel>
+                                      <FormGroup aria-label="position" name="position" row>
+                                        <FormControlLabel
+                                          control={<Checkbox checked={daysData.monday}
+                                            onChange={this.handleChangeDaysData}
+                                            value="monday" />}
+                                          label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.MONDAY"></FormattedMessage>}
+                                          labelPlacement="top"
+                                        />
+                                        <FormControlLabel
+                                          control={<Checkbox checked={daysData.tuesday}
+                                            onChange={this.handleChangeDaysData}
+                                            value="tuesday" />}
+                                          label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.TUESDAY"></FormattedMessage>}
+                                          labelPlacement="top"
+                                        />
+                                        <FormControlLabel
+                                          control={<Checkbox checked={daysData.wednesday}
+                                            onChange={this.handleChangeDaysData}
+                                            value="wednesday" />}
+                                          label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.WEDNESDAY"></FormattedMessage>}
+                                          labelPlacement="top"
+                                        />
+                                        <FormControlLabel
+                                          control={<Checkbox checked={daysData.thursday}
+                                            onChange={this.handleChangeDaysData}
+                                            value="thursday" />}
+                                          label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.THURSDAY"></FormattedMessage>}
+                                          labelPlacement="top"
+                                        />
+                                        <FormControlLabel
+                                          control={<Checkbox checked={daysData.friday}
+                                            onChange={this.handleChangeDaysData}
+                                            value="friday" />}
+                                          label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.FRIDAY"></FormattedMessage>}
+                                          labelPlacement="top"
+                                        />
+                                        <FormControlLabel
+                                          control={<Checkbox checked={daysData.saturday}
+                                            onChange={this.handleChangeDaysData}
+                                            value="saturday" />}
+                                          label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SATURDAY"></FormattedMessage>}
+                                          labelPlacement="top"
+                                        />
+                                        <FormControlLabel
+                                          control={<Checkbox checked={daysData.sunday}
+                                            onChange={this.handleChangeDaysData}
+                                            value="sunday" />}
+                                          label={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.DAYS.SUNDAY"></FormattedMessage>}
+                                          labelPlacement="top"
+                                        />
+                                      </FormGroup>
+                                    </FormControl>
+                                  </Grid>
+                                )
+                                :
+                                (<></>)
                             }
                             <Grid
                               item
@@ -2189,45 +2257,45 @@ class Calendar extends React.PureComponent {
                         >
                           {
                             roles[auth.getUserInfo().user.role.name] === roles.ROLE_ADMIN ||
-                            (tooltipClassData != null && tooltipClassData.endDate >= moment().tz("America/Bogota").toDate()) ?
+                              (tooltipClassData != null && tooltipClassData.endDate >= moment().tz("America/Bogota").toDate()) ?
                               (
-                                  <>
-                                    <ListItem button onClick={this.handleClickCollapse}>
-                                      <ListItemText
-                                          primary={<FormattedMessage
-                                              id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.SHOW.MATERIALS.TITLE"></FormattedMessage>}
-                                          type={"one"}
-                                      />
-                                      {collapse.type_one ? (
-                                          <ExpandLess/>
-                                      ) : (
-                                          <ExpandMore/>
-                                      )}
-                                    </ListItem>
-                                    <Collapse
-                                        className="pl-5 pr-5"
-                                        in={collapse.type_one}
-                                        timeout="auto"
-                                        unmountOnExit
-                                    >
-                                      <Grid container>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            sm={12}
-                                            md={12}
-                                            lg={12}
-                                        >
-                                          <Table numRows={materials.body.length} title={''} subtitle={''}
-                                                 className="card-stretch gutter-b" data={materials} current_page={0}
-                                                 total={materials.body.length} onChildEdit={null} onChildFile={null}
-                                                 onChildCreate={null} onChildPaginationClick={null}></Table>
-                                        </Grid>
+                                <>
+                                  <ListItem button onClick={this.handleClickCollapse}>
+                                    <ListItemText
+                                      primary={<FormattedMessage
+                                        id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.SHOW.MATERIALS.TITLE"></FormattedMessage>}
+                                      type={"one"}
+                                    />
+                                    {collapse.type_one ? (
+                                      <ExpandLess />
+                                    ) : (
+                                      <ExpandMore />
+                                    )}
+                                  </ListItem>
+                                  <Collapse
+                                    className="pl-5 pr-5"
+                                    in={collapse.type_one}
+                                    timeout="auto"
+                                    unmountOnExit
+                                  >
+                                    <Grid container>
+                                      <Grid
+                                        item
+                                        xs={12}
+                                        sm={12}
+                                        md={12}
+                                        lg={12}
+                                      >
+                                        <Table numRows={materials.body.length} title={''} subtitle={''}
+                                          className="card-stretch gutter-b" data={materials} current_page={0}
+                                          total={materials.body.length} onChildEdit={null} onChildFile={null}
+                                          onChildCreate={null} onChildPaginationClick={null}></Table>
                                       </Grid>
-                                    </Collapse>
-                                  </>
+                                    </Grid>
+                                  </Collapse>
+                                </>
                               )
-                                :
+                              :
                               (<></>)
                           }
                           <ListItem
@@ -2241,8 +2309,8 @@ class Calendar extends React.PureComponent {
                             {collapse.type_two ? (
                               <ExpandLess />
                             ) : (
-                                <ExpandMore />
-                              )}
+                              <ExpandMore />
+                            )}
                           </ListItem>
                           <Collapse
                             className="pl-2 pr-2"
@@ -2292,8 +2360,8 @@ class Calendar extends React.PureComponent {
                                     {collapse.type_one ? (
                                       <ExpandLess />
                                     ) : (
-                                        <ExpandMore />
-                                      )}
+                                      <ExpandMore />
+                                    )}
                                   </ListItem>
                                   <Collapse
                                     className="pl-5 pr-5"
@@ -2514,74 +2582,206 @@ class Calendar extends React.PureComponent {
                           }
                           {roles[auth.getUserInfo().user.role.name] ===
                             roles.ROLE_ADMIN ? (
-                              <>
-                                <ListItem
-                                  button
-                                  onClick={this.handleClickCollapse}
-                                >
-                                  <ListItemText
-                                    primary={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.CANCEL_CLASS.TITLE"></FormattedMessage>}
-                                    type={"two"}
-                                  />
-                                  {collapse.type_two ? (
-                                    <ExpandLess />
-                                  ) : (
-                                      <ExpandMore />
-                                    )}
-                                </ListItem>
-                                <Collapse
-                                  className="pl-5 pr-5"
-                                  in={collapse.type_two}
-                                  timeout="auto"
-                                  unmountOnExit
-                                >
-                                  <Grid container>
-                                    <Grid
-                                      item
-                                      xs={12}
-                                      sm={12}
-                                      md={12}
-                                      lg={12}
-                                      className="pt-2 pb-2 pl-2 pr-2"
+                            <>
+                              <ListItem
+                                button
+                                onClick={this.handleClickCollapse}
+                              >
+                                <ListItemText
+                                  primary={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.CANCEL_CLASS.TITLE"></FormattedMessage>}
+                                  type={"two"}
+                                />
+                                {collapse.type_two ? (
+                                  <ExpandLess />
+                                ) : (
+                                  <ExpandMore />
+                                )}
+                              </ListItem>
+                              <Collapse
+                                className="pl-5 pr-5"
+                                in={collapse.type_two}
+                                timeout="auto"
+                                unmountOnExit
+                              >
+                                <Grid container>
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    sm={12}
+                                    md={12}
+                                    lg={12}
+                                    className="pt-2 pb-2 pl-2 pr-2"
+                                  >
+                                    <form
+                                      noValidate
+                                      autoComplete="off"
+                                      onSubmit={null}
                                     >
-                                      <form
-                                        noValidate
-                                        autoComplete="off"
-                                        onSubmit={null}
+                                      <FormControl
+                                        component="fieldset"
+                                        className="wd-full"
                                       >
-                                        <FormControl
-                                          component="fieldset"
-                                          className="wd-full"
+                                        <FormLabel component="legend">
+                                          <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.CANCEL_CLASS.CONFIRM"></FormattedMessage>
+                                        </FormLabel>
+                                        <Grid
+                                          component="label"
+                                          container
+                                          alignItems="center"
+                                          spacing={1}
                                         >
-                                          <FormLabel component="legend">
-                                            <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.CANCEL_CLASS.CONFIRM"></FormattedMessage>
-                                          </FormLabel>
-                                          <Grid
-                                            component="label"
-                                            container
-                                            alignItems="center"
-                                            spacing={1}
-                                          >
-                                            <Grid item><FormattedMessage id="GENERAL.FORM.OPTIONS.NO"></FormattedMessage></Grid>
-                                            <Grid item>
-                                              <AntSwitch
-                                                checked={stateClass}
-                                                onChange={
-                                                  this.handleChangeStateClass
-                                                }
-                                              />
-                                            </Grid>
-                                            <Grid item><FormattedMessage id="GENERAL.FORM.OPTIONS.YES"></FormattedMessage></Grid>
+                                          <Grid item><FormattedMessage id="GENERAL.FORM.OPTIONS.NO"></FormattedMessage></Grid>
+                                          <Grid item>
+                                            <AntSwitch
+                                              checked={stateClass}
+                                              onChange={
+                                                this.handleChangeStateClass
+                                              }
+                                            />
                                           </Grid>
-                                        </FormControl>
-                                      </form>
-                                    </Grid>
+                                          <Grid item><FormattedMessage id="GENERAL.FORM.OPTIONS.YES"></FormattedMessage></Grid>
+                                        </Grid>
+                                      </FormControl>
+                                    </form>
                                   </Grid>
-                                </Collapse>
-                              </>
-                            ) : (
-                              <></>
-                            )}
+                                </Grid>
+                              </Collapse>
+                              <ListItem
+                                button
+                                onClick={this.handleClickCollapse}
+                              >
+                                <ListItemText
+                                  primary={<FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.INFO_CLASS.EDIT.HOUR.TITLE"></FormattedMessage>}
+                                  type={"three"}
+                                />
+                                {collapse.type_three ? (
+                                  <ExpandLess />
+                                ) : (
+                                  <ExpandMore />
+                                )}
+                              </ListItem>
+                              <Collapse
+                                className="pl-5 pr-5"
+                                in={collapse.type_three}
+                                timeout="auto"
+                                unmountOnExit
+                              >
+                                <Grid container>
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    sm={12}
+                                    md={12}
+                                    lg={12}
+                                  >
+                                    <form
+                                      noValidate
+                                      autoComplete="off"
+                                      onSubmit={this.handleEditHoursClass}
+                                    >
+                                      <Grid container>
+                                        <Grid
+                                          item
+                                          xs={12}
+                                          sm={12}
+                                          md={6}
+                                          lg={6}
+                                          className="pt-2 pb-2 pl-2 pr-2"
+                                        >
+                                          <FormControl
+                                            component="fieldset"
+                                            className="wd-full"
+                                          >
+                                            <FormLabel component="legend">
+                                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.INIT_DATE"></FormattedMessage>
+                                            </FormLabel>
+                                            <TextField
+                                              label=""
+                                              variant="outlined"
+                                              size="small"
+                                              type="datetime-local"
+                                              value={formData.init.data}
+                                              error={formData.init.error}
+                                              helperText={formData.init.msj}
+                                              onChange={this.handleChangeInit}
+                                              className={classes.textField}
+                                              InputLabelProps={{
+                                                shrink: true,
+                                              }}
+                                            />
+                                          </FormControl>
+                                        </Grid>
+                                        <Grid
+                                          item
+                                          xs={12}
+                                          sm={12}
+                                          md={6}
+                                          lg={6}
+                                          className="pt-2 pb-2 pl-2 pr-2"
+                                        >
+                                          <FormControl
+                                            component="fieldset"
+                                            className="wd-full"
+                                          >
+                                            <FormLabel component="legend">
+                                              <FormattedMessage id="DASHBOARD.CONTENT.CALENDAR.CREATE.END_DATE"></FormattedMessage>
+                                            </FormLabel>
+                                            <TextField
+                                              label=""
+                                              variant="outlined"
+                                              size="small"
+                                              type="datetime-local"
+                                              value={formData.end.data}
+                                              error={formData.end.error}
+                                              helperText={formData.end.msj}
+                                              onChange={this.handleChangeEnd}
+                                              className={classes.textField}
+                                              InputLabelProps={{
+                                                shrink: true,
+                                              }}
+                                            />
+                                          </FormControl>
+                                        </Grid>
+                                        <Grid
+                                          item
+                                          xs={12}
+                                          sm={12}
+                                          md={12}
+                                          lg={12}
+                                          className="pt-2 pb-2 pl-2 pr-2 text-center"
+                                        >
+                                          <Grid
+                                            container
+                                            className="justify-content-center"
+                                          >
+                                            <Grid
+                                              item
+                                              xs={6}
+                                              sm={6}
+                                              md={6}
+                                              lg={6}
+                                              className="mt-2 mb-2"
+                                            >
+                                              <Button
+                                                size="large"
+                                                variant="contained"
+                                                className="btn-primary btn-block h-35"
+                                                type={"submit"}
+                                              >
+                                                <FormattedMessage id="GENERAL.FORM.ACTIONS.EDIT"></FormattedMessage>
+                                              </Button>
+                                            </Grid>
+                                          </Grid>
+                                        </Grid>
+                                      </Grid>
+                                    </form>
+                                  </Grid>
+                                </Grid>
+                              </Collapse>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                         </List>
 
                       </div>
@@ -2830,9 +3030,9 @@ class Calendar extends React.PureComponent {
                     </Grid>
                   </form>
                 ) :
-                        (
-                          <></>
-                        )
+                  (
+                    <></>
+                  )
                 }
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -2867,13 +3067,13 @@ class Calendar extends React.PureComponent {
             <div className={`card card-custom card-stretch gutter-b p-0`}>
               {roles[auth.getUserInfo().user.role.name] ===
                 roles.ROLE_ADMIN ? (
-                  <div className={"bg-light text-right"}>
-                    <button className={"btn btn-primary m-4"} onClick={this.handleAddClass}>
-                      <AddIcon />
-                      <span className={"pl-2"}>Crear clase</span>
-                    </button>
-                  </div>
-                ) :
+                <div className={"bg-light text-right"}>
+                  <button className={"btn btn-primary m-4"} onClick={this.handleAddClass}>
+                    <AddIcon />
+                    <span className={"pl-2"}>Crear clase</span>
+                  </button>
+                </div>
+              ) :
                 (<></>)
               }
               <Paper>
@@ -2942,15 +3142,15 @@ class Calendar extends React.PureComponent {
 
                   {roles[auth.getUserInfo().user.role.name] ===
                     roles.ROLE_ADMIN ? (
-                      <Fab
-                        color="secondary"
-                        className={classes.addButton}
-                        style={{ zIndex: 10 }}
-                        onClick={this.handleAddClass}
-                      >
-                        <AddIcon />
-                      </Fab>
-                    ) :
+                    <Fab
+                      color="secondary"
+                      className={classes.addButton}
+                      style={{ zIndex: 10 }}
+                      onClick={this.handleAddClass}
+                    >
+                      <AddIcon />
+                    </Fab>
+                  ) :
                     (<></>)
                   }
                 </Scheduler>

@@ -562,7 +562,7 @@ export const LeIndex = () => {
                     <div className="card-body pt-0 pb-3">
                       <div className="tab-content">
                         <section className={`${classes.fullWidth} mt-4`}>
-                          <Dropzone className={'p-2 bg-primary'} maxFiles={5} multiple={true} accept={'.pdf, .mp4, .mp3'} onDrop={acceptedFiles => handleOnDropAccepted(acceptedFiles)} onDropRejected={() => handleOnDropRejected()}>
+                          <Dropzone className={'p-2 bg-primary'} maxFiles={5} multiple={true} accept={'.pdf, .mp4, .mp3', '.mov', '.m4a'} onDrop={acceptedFiles => handleOnDropAccepted(acceptedFiles)} onDropRejected={() => handleOnDropRejected()}>
                             {({ getRootProps, getInputProps }) => (
                               <div {...getRootProps({ className: classes.dropzone })}>
                                 <input {...getInputProps()} />
